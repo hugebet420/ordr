@@ -184,8 +184,8 @@ body { font-family: 'Inter', system-ui, sans-serif; background: var(--bg); color
         {% endfor %}
       </select>
     </div>
-    <button class="pay-btn" id="pay-btn" onclick="startCheckout()">Payer en ligne →</button>
-    <p style="text-align:center;font-size:12px;color:var(--text-sec);margin-top:10px;">Paiement sécurisé par Stripe</p>
+    <button class="pay-btn" id="pay-btn" onclick="startCheckout()">Confirmer la commande →</button>
+    <p style="text-align:center;font-size:12px;color:var(--text-sec);margin-top:10px;" id="pay-mention">Paiement à la caisse lors du retrait</p>
   </div>
 </div>
 
@@ -374,10 +374,16 @@ function startCheckout() {
   })
     .then(r => r.json())
     .then(d => {
-      if (d.checkout_url) { window.location.href = d.checkout_url; }
-      else { alert('Erreur : ' + (d.error || 'Impossible de lancer le paiement.')); btn.disabled = false; btn.textContent = 'Payer en ligne →'; }
+      if (d.checkout_url) {
+        window.location.href = d.checkout_url;
+      } else if (d.cash) {
+        window.location.href = `/order-confirmed?shop=${d.shop_id}&cash=1`;
+      } else {
+        alert('Erreur : ' + (d.error || 'Impossible de valider la commande.'));
+        btn.disabled = false; btn.textContent = 'Confirmer la commande →';
+      }
     })
-    .catch(() => { alert('Erreur réseau.'); btn.disabled = false; btn.textContent = 'Payer en ligne →'; });
+    .catch(() => { alert('Erreur réseau.'); btn.disabled = false; btn.textContent = 'Confirmer la commande →'; });
 }
 
 // ── Scroll catégories ──

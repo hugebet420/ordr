@@ -44,7 +44,9 @@ h1{font-size:22px;font-weight:800;margin-bottom:8px;}
   <h1>Commande confirmée !</h1>
   <p class="sub">
     {% if shop %}Votre commande chez <strong>{{ shop.nom_commerce }}</strong> est bien enregistrée.{% else %}Votre commande est bien enregistrée.{% endif %}
-    Vous recevrez une notification à la boutique.
+    {% if request.args.get('cash') %}
+    <br><strong>Paiement à la caisse lors du retrait.</strong>
+    {% endif %}
   </p>
 
   {% if order %}

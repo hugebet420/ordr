@@ -115,9 +115,6 @@ def storefront(shop_id):
 
 @app.route("/api/checkout", methods=["POST"])
 def create_checkout():
-    if not stripe or not stripe.api_key:
-        return jsonify({"error": "Stripe non configuré"}), 500
-
     data           = request.get_json()
     shop_id        = data.get("shop_id")
     items          = data.get("items", [])
@@ -132,8 +129,25 @@ def create_checkout():
     if not shop:
         return jsonify({"error": "Commerce inconnu"}), 404
 
-    if not shop.get("stripe_account_id") or not shop.get("stripe_onboarding_complete"):
-        return jsonify({"error": "Ce commerce n'a pas encore activé les paiements en ligne."}), 400
+    # Mode paiement sur place : si Stripe pas configuré, on enregistre la commande directement
+    stripe_ready = (stripe and stripe.api_key
+                    and shop.get("stripe_account_id")
+                    and shop.get("stripe_onboarding_complete"))
+
+    if not stripe_ready:
+        total = sum(it.get("price", 0) * it.get("qty", 1) for it in items)
+        order = {
+            "stripe_session_id": None,
+            "items":             items,
+            "total":             total,
+            "slot":              slot,
+            "customer_name":     customer_name,
+            "customer_phone":    customer_phone,
+            "status":            "à régler sur place",
+        }
+        db.create_order(shop_id, order)
+        try_notify_order(shop_id, order)
+        return jsonify({"cash": True, "shop_id": shop_id})
 
     line_items, total = [], 0.0
     for it in items:
@@ -184,10 +198,12 @@ def create_checkout():
 def order_confirmed():
     stripe_session_id = request.args.get("session_id")
     shop_id           = request.args.get("shop")
+    is_cash           = request.args.get("cash") == "1"
     shop              = db.get_shop(shop_id) if shop_id else None
     order             = {}
 
-    if stripe and stripe_session_id and not db.order_exists(stripe_session_id):
+    # Mode paiement en ligne : récupère la commande depuis Stripe
+    if not is_cash and stripe and stripe_session_id and not db.order_exists(stripe_session_id):
         try:
             sess  = stripe.checkout.Session.retrieve(
                 stripe_session_id, expand=["line_items"]
