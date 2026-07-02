@@ -112,7 +112,7 @@ body {
 .input {
   width: 100%; padding: 11px 14px;
   background: rgba(255,255,255,0.06); border: 1px solid var(--border-md);
-  border-radius: 10px; color: var(--text); font-family: inherit; font-size: 15px;
+  border-radius: 10px; color: var(--text); font-family: inherit; font-size: 16px;
   outline: none; transition: border-color .15s, box-shadow .15s;
 }
 .input::placeholder { color: var(--text-muted); }
