@@ -29,6 +29,16 @@ Règles :
 - Regroupe par catégories logiques (entrées, plats, desserts, boissons, formules…)
 - Si texte illisible → avertissement explicite dans le tableau
 - Réponds UNIQUEMENT en JSON valide, sans texte avant ni après, sans markdown
+
+RÈGLE IMPORTANTE — variantes sur une même ligne :
+Si une ligne liste plusieurs variantes d'un même produit séparées par des virgules ou "/" avec un seul prix
+(ex: "Mochis chocolat, noix de coco, mangue passion .... 4€"),
+crée UN produit SÉPARÉ par variante, chacun avec le même prix.
+Exemple correct :
+  {"nom": "Mochi chocolat", "prix": 4.0, "description": null}
+  {"nom": "Mochi noix de coco", "prix": 4.0, "description": null}
+  {"nom": "Mochi mangue passion", "prix": 4.0, "description": null}
+Ne regroupe jamais plusieurs saveurs/variantes dans un seul produit.
 """
 
 
