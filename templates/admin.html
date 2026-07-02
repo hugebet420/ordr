@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+{% block title %}Dashboard{% endblock %}
+
+{% block topbar_extra %}
+  <a href="/admin/new" class="btn btn-primary btn-sm" style="margin-left:8px;">+ Nouveau commerce</a>
+{% endblock %}
+
+{% block body %}
+<div class="page">
+  <div class="page-header">
+    <div>
+      <h1>Tableau de bord</h1>
+    </div>
+    <a href="/admin/new" class="btn btn-primary">+ Nouveau commerce</a>
+  </div>
+
+  <div class="stats-row">
+    <div class="card stat-card">
+      <div class="stat-value">{{ stats.total_shops }}</div>
+      <div class="stat-label">Commerce{{ 's' if stats.total_shops > 1 else '' }} actif{{ 's' if stats.total_shops > 1 else '' }}</div>
+    </div>
+    <div class="card stat-card">
+      <div class="stat-value">{{ stats.total_orders }}</div>
+      <div class="stat-label">Commande{{ 's' if stats.total_orders > 1 else '' }} reçue{{ 's' if stats.total_orders > 1 else '' }}</div>
+    </div>
+  </div>
+
+  {% if shops %}
+  <div class="shop-grid">
+    {% for s in shops %}
+    <a href="/admin/shop/{{ s.id }}" class="shop-card">
+      <div>
+        <div class="shop-card-name">{{ s.nom_commerce or 'Commerce sans nom' }}</div>
+        <div class="shop-card-meta" style="margin-top:6px;">
+          <span>{{ s.total_produits or 0 }} produit{{ 's' if (s.total_produits or 0) > 1 else '' }}</span>
+          {% if s.adresse %}
+          <span>· {{ s.adresse | truncate(40) }}</span>
+          {% endif %}
+        </div>
+      </div>
+      <div class="shop-card-footer">
+        {% if s.stripe_onboarding_complete %}
+          <span class="badge badge-green">✓ Paiements actifs</span>
+        {% elif s.stripe_account_id %}
+          <span class="badge badge-amber">⚡ Config. Stripe en cours</span>
+        {% else %}
+          <span class="badge badge-grey">Stripe non configuré</span>
+        {% endif %}
+        <span style="font-size:13px;color:var(--text-muted);">Voir →</span>
+      </div>
+    </a>
+    {% endfor %}
+  </div>
+
+  {% else %}
+  <div class="card">
+    <div class="empty-state">
+      <span class="empty-icon">🏪</span>
+      <p>Aucun commerce enregistré pour l'instant.</p>
+      <a href="/admin/new" class="btn btn-primary" style="margin-top:20px;display:inline-flex;">
+        Créer le premier commerce
+      </a>
+    </div>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

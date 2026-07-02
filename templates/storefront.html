@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<title>{{ shop.nom_commerce or 'Commander' }}</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --primary: #10B981;
+  --primary-h: #059669;
+  --surface: #fff;
+  --bg: #F8FAFC;
+  --border: #E2E8F0;
+  --text: #0F172A;
+  --text-sec: #64748B;
+  --radius: 14px;
+  --cart-bg: #fff;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 16px; -webkit-font-smoothing: antialiased; }
+body { font-family: 'Inter', system-ui, sans-serif; background: var(--bg); color: var(--text); padding-bottom: 120px; }
+
+/* ── Header ── */
+.store-header {
+  background: var(--primary);
+  color: #fff;
+  padding: 20px 20px 16px;
+  position: sticky; top: 0; z-index: 50;
+}
+.store-name { font-size: 20px; font-weight: 800; letter-spacing: -.3px; }
+.store-addr { font-size: 13px; opacity: .8; margin-top: 2px; }
+
+/* ── Category tabs ── */
+.cat-tabs {
+  background: #fff; border-bottom: 1px solid var(--border);
+  display: flex; gap: 0; overflow-x: auto; scrollbar-width: none;
+  position: sticky; top: 64px; z-index: 40;
+}
+.cat-tabs::-webkit-scrollbar { display: none; }
+.cat-tab {
+  padding: 13px 18px; font-size: 14px; font-weight: 600;
+  white-space: nowrap; border: none; background: transparent;
+  color: var(--text-sec); cursor: pointer; border-bottom: 2px solid transparent;
+  transition: color .15s, border-color .15s;
+}
+.cat-tab.active { color: var(--primary); border-bottom-color: var(--primary); }
+
+/* ── Product list ── */
+.products { padding: 12px 16px; }
+.product-card {
+  background: var(--surface); border-radius: var(--radius);
+  border: 1px solid var(--border); padding: 14px 16px;
+  display: flex; gap: 14px; align-items: center; margin-bottom: 10px;
+}
+.product-card .p-info { flex: 1; min-width: 0; }
+.product-card .p-name { font-size: 15px; font-weight: 700; line-height: 1.3; }
+.product-card .p-desc { font-size: 13px; color: var(--text-sec); margin-top: 3px; line-height: 1.4; }
+.product-card .p-price { font-size: 16px; font-weight: 800; color: var(--primary); margin-top: 6px; }
+.product-card .p-right { display: flex; flex-direction: column; align-items: flex-end; gap: 8px; flex-shrink: 0; }
+.add-btn {
+  width: 36px; height: 36px; border-radius: 10px; border: none;
+  background: var(--primary); color: #fff; font-size: 22px; line-height: 1;
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+  transition: background .15s; flex-shrink: 0;
+}
+.add-btn:active { background: var(--primary-h); transform: scale(.93); }
+.qty-ctrl { display: flex; align-items: center; gap: 6px; }
+.qty-btn {
+  width: 30px; height: 30px; border-radius: 8px; border: 1.5px solid var(--border);
+  background: #fff; font-size: 18px; line-height: 1; cursor: pointer;
+  display: flex; align-items: center; justify-content: center; font-weight: 700;
+  transition: all .12s;
+}
+.qty-btn:active { background: var(--bg); }
+.qty-num { font-size: 15px; font-weight: 700; min-width: 16px; text-align: center; }
+
+/* ── Cart bottom sheet ── */
+.cart-bar {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 80;
+  background: var(--primary); color: #fff;
+  padding: 14px 20px; display: flex; align-items: center; gap: 12px;
+  box-shadow: 0 -4px 20px rgba(0,0,0,.12);
+  transform: translateY(100%); transition: transform .25s cubic-bezier(.22,1,.36,1);
+}
+.cart-bar.visible { transform: translateY(0); }
+.cart-bar-count {
+  background: rgba(255,255,255,.25); border-radius: 999px;
+  padding: 3px 10px; font-size: 13px; font-weight: 700; flex-shrink: 0;
+}
+.cart-bar-label { flex: 1; font-size: 15px; font-weight: 700; }
+.cart-bar-total { font-size: 17px; font-weight: 800; flex-shrink: 0; }
+
+/* ── Checkout sheet ── */
+.sheet-overlay {
+  display: none; position: fixed; inset: 0; z-index: 100;
+  background: rgba(0,0,0,.5); backdrop-filter: blur(3px);
+}
+.sheet-overlay.open { display: block; }
+.sheet {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 110;
+  background: #fff; border-radius: 20px 20px 0 0;
+  padding: 0; transform: translateY(100%);
+  transition: transform .3s cubic-bezier(.22,1,.36,1);
+  max-height: 90vh; overflow-y: auto;
+}
+.sheet.open { transform: translateY(0); }
+.sheet-handle { width: 36px; height: 4px; background: #E2E8F0; border-radius: 2px; margin: 12px auto 0; }
+.sheet-header { padding: 16px 20px 0; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 10px; }
+.sheet-header h2 { font-size: 18px; font-weight: 800; flex: 1; }
+.sheet-close { width:32px;height:32px;border:none;background:#F1F5F9;border-radius:50%;
+  font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center; }
+.sheet-body { padding: 16px 20px; }
+.sheet-items { margin-bottom: 16px; }
+.sheet-item { display:flex;justify-content:space-between;align-items:center;padding:8px 0;
+  border-bottom:1px solid var(--border);font-size:14px; }
+.sheet-item:last-child { border-bottom:none; }
+.sheet-item-name { font-weight:600; }
+.sheet-item-price { color:var(--primary);font-weight:700; }
+.sheet-total { display:flex;justify-content:space-between;padding:12px 0;
+  font-size:17px;font-weight:800;border-top:2px solid var(--border);margin-bottom:16px; }
+
+.sf { margin-bottom:14px; }
+.sf label { display:block;font-size:13px;font-weight:600;color:var(--text-sec);margin-bottom:6px; }
+.sf input, .sf select {
+  width:100%;padding:11px 14px;border:1.5px solid var(--border);border-radius:10px;
+  font-family:inherit;font-size:15px;outline:none;
+  transition:border-color .15s, box-shadow .15s;
+}
+.sf input:focus, .sf select:focus { border-color:var(--primary); box-shadow:0 0 0 3px rgba(16,185,129,.15); }
+.pay-btn {
+  width:100%;padding:15px;background:var(--primary);color:#fff;border:none;
+  border-radius:12px;font-family:inherit;font-size:16px;font-weight:800;
+  cursor:pointer;transition:background .15s,transform .1s;
+}
+.pay-btn:active { background:var(--primary-h);transform:scale(.98); }
+.pay-btn:disabled { opacity:.5;cursor:not-allowed;transform:none; }
+</style>
+</head>
+<body>
+
+<header class="store-header">
+  <div class="store-name">{{ shop.nom_commerce or 'Commander' }}</div>
+  {% if shop.adresse %}<div class="store-addr">{{ shop.adresse }}</div>{% endif %}
+</header>
+
+<!-- Category tabs -->
+<div class="cat-tabs" id="cat-tabs">
+  {% for cat in (shop.categories or []) %}
+  <button class="cat-tab{% if loop.first %} active{% endif %}"
+          onclick="scrollToCat({{ loop.index0 }})">
+    {{ cat.nom_categorie }}
+  </button>
+  {% endfor %}
+</div>
+
+<!-- Products -->
+<div id="products-root">
+{% for cat in (shop.categories or []) %}
+<div class="products" id="cat-section-{{ loop.index0 }}">
+  <div style="font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;
+              color:var(--text-sec);margin-bottom:10px;padding-top:4px;">
+    {{ cat.nom_categorie }}
+  </div>
+  {% for prod in cat.produits %}
+  {% if prod.prix is not none %}
+  <div class="product-card" data-id="{{ loop.index0 }}-{{ loop.index0 }}"
+       data-name="{{ prod.nom|e }}" data-price="{{ prod.prix }}"
+       data-cat="{{ loop.index0 - 1 + 1 }}" data-prod="{{ loop.index0 }}">
+    <div class="p-info">
+      <div class="p-name">{{ prod.nom }}</div>
+      {% if prod.description %}<div class="p-desc">{{ prod.description }}</div>{% endif %}
+      <div class="p-price">{{ '%.2f €'|format(prod.prix) }}</div>
+    </div>
+    <div class="p-right">
+      <button class="add-btn" onclick="addToCart(this)">+</button>
+    </div>
+  </div>
+  {% endif %}
+  {% endfor %}
+</div>
+{% endfor %}
+</div>
+
+<!-- Cart bar -->
+<div class="cart-bar" id="cart-bar" onclick="openSheet()">
+  <span class="cart-bar-count" id="cart-count">0</span>
+  <span class="cart-bar-label">Mon panier</span>
+  <span class="cart-bar-total" id="cart-total-bar">0.00 €</span>
+</div>
+
+<!-- Checkout sheet -->
+<div class="sheet-overlay" id="sheet-overlay" onclick="closeSheet()"></div>
+<div class="sheet" id="checkout-sheet">
+  <div class="sheet-handle"></div>
+  <div class="sheet-header">
+    <h2>Mon panier</h2>
+    <button class="sheet-close" onclick="closeSheet()">✕</button>
+  </div>
+  <div class="sheet-body">
+    <div class="sheet-items" id="sheet-items"></div>
+    <div class="sheet-total">
+      <span>Total</span>
+      <span id="sheet-total-display">0.00 €</span>
+    </div>
+
+    <div class="sf">
+      <label>Votre prénom *</label>
+      <input type="text" id="customer-name" placeholder="Ex : Marie" autocomplete="given-name">
+    </div>
+    <div class="sf">
+      <label>Téléphone *</label>
+      <input type="tel" id="customer-phone" placeholder="Ex : 06 12 34 56 78" autocomplete="tel">
+    </div>
+    <div class="sf">
+      <label>Créneau de retrait *</label>
+      <select id="slot-select">
+        <option value="">— Choisir un créneau —</option>
+        {% for h in range(9, 20) %}
+        <option>{{ '%02d'|format(h) }}:00 – {{ '%02d'|format(h) }}:30</option>
+        <option>{{ '%02d'|format(h) }}:30 – {{ '%02d'|format(h+1) }}:00</option>
+        {% endfor %}
+      </select>
+    </div>
+
+    <button class="pay-btn" id="pay-btn" onclick="startCheckout()">
+      Payer en ligne →
+    </button>
+    <p style="text-align:center;font-size:12px;color:var(--text-sec);margin-top:10px;">
+      Paiement sécurisé par Stripe
+    </p>
+  </div>
+</div>
+
+<script>
+const SHOP_ID   = "{{ shop_id }}";
+const STRIPE_PK = "{{ stripe_pk }}";
+let cart = [];
+
+// ── Cart ──
+function getCard(el) {
+  const card = el.closest('.product-card');
+  return {
+    name:  card.dataset.name,
+    price: parseFloat(card.dataset.price),
+    el:    card,
+  };
+}
+
+function addToCart(btn) {
+  const {name, price, el} = getCard(btn);
+  const existing = cart.find(i => i.name === name);
+  if (existing) {
+    existing.qty++;
+  } else {
+    cart.push({ name, price, qty: 1 });
+  }
+  // Replace + button with qty control
+  const right = el.querySelector('.p-right');
+  renderCardControl(right, name, price);
+  updateCartBar();
+}
+
+function renderCardControl(right, name, price) {
+  const item = cart.find(i => i.name === name);
+  if (!item || item.qty === 0) {
+    right.innerHTML = `<button class="add-btn" onclick="addToCart(this)">+</button>`;
+  } else {
+    right.innerHTML = `
+      <div class="qty-ctrl">
+        <button class="qty-btn" onclick="changeQty(this, -1)">−</button>
+        <span class="qty-num">${item.qty}</span>
+        <button class="qty-btn" onclick="changeQty(this, 1)">+</button>
+      </div>`;
+  }
+}
+
+function changeQty(btn, delta) {
+  const {name, price, el} = getCard(btn);
+  const item = cart.find(i => i.name === name);
+  if (!item) return;
+  item.qty = Math.max(0, item.qty + delta);
+  if (item.qty === 0) cart = cart.filter(i => i.name !== name);
+  renderCardControl(el.querySelector('.p-right'), name, price);
+  updateCartBar();
+}
+
+function cartTotal() { return cart.reduce((s, i) => s + i.price * i.qty, 0); }
+function cartCount() { return cart.reduce((s, i) => s + i.qty, 0); }
+
+function updateCartBar() {
+  const n = cartCount();
+  document.getElementById('cart-count').textContent = n;
+  document.getElementById('cart-total-bar').textContent = cartTotal().toFixed(2) + ' €';
+  document.getElementById('cart-bar').classList.toggle('visible', n > 0);
+}
+
+// ── Sheet ──
+function openSheet() {
+  renderSheetItems();
+  document.getElementById('sheet-overlay').classList.add('open');
+  document.getElementById('checkout-sheet').classList.add('open');
+}
+function closeSheet() {
+  document.getElementById('sheet-overlay').classList.remove('open');
+  document.getElementById('checkout-sheet').classList.remove('open');
+}
+
+function renderSheetItems() {
+  const el = document.getElementById('sheet-items');
+  el.innerHTML = cart.map(i => `
+    <div class="sheet-item">
+      <span class="sheet-item-name">${i.qty}× ${esc(i.name)}</span>
+      <span class="sheet-item-price">${(i.price * i.qty).toFixed(2)} €</span>
+    </div>`).join('');
+  document.getElementById('sheet-total-display').textContent = cartTotal().toFixed(2) + ' €';
+}
+
+// ── Checkout ──
+function startCheckout() {
+  const name  = document.getElementById('customer-name').value.trim();
+  const phone = document.getElementById('customer-phone').value.trim();
+  const slot  = document.getElementById('slot-select').value;
+  if (!name)  { alert('Merci de saisir votre prénom.'); return; }
+  if (!phone) { alert('Merci de saisir votre numéro de téléphone.'); return; }
+  if (!slot)  { alert('Merci de choisir un créneau de retrait.'); return; }
+  if (!cart.length) { alert('Votre panier est vide.'); return; }
+
+  const btn = document.getElementById('pay-btn');
+  btn.disabled = true; btn.textContent = 'Redirection…';
+
+  fetch('/api/checkout', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      shop_id: SHOP_ID,
+      items:   cart.map(i => ({ name: i.name, price: i.price, qty: i.qty })),
+      slot, customer_name: name, customer_phone: phone,
+    }),
+  })
+    .then(r => r.json())
+    .then(d => {
+      if (d.checkout_url) { window.location.href = d.checkout_url; }
+      else {
+        alert('Erreur : ' + (d.error || 'Impossible de lancer le paiement.'));
+        btn.disabled = false; btn.textContent = 'Payer en ligne →';
+      }
+    })
+    .catch(() => {
+      alert('Erreur réseau.');
+      btn.disabled = false; btn.textContent = 'Payer en ligne →';
+    });
+}
+
+// ── Category scroll ──
+function scrollToCat(idx) {
+  const section = document.getElementById('cat-section-' + idx);
+  if (!section) return;
+  section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  document.querySelectorAll('.cat-tab').forEach((t,i) => t.classList.toggle('active', i===idx));
+}
+
+// ── Utils ──
+function esc(s) {
+  return (s||'').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+</script>
+</body>
+</html>

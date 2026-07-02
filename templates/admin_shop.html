@@ -1,0 +1,356 @@
+{% extends "base.html" %}
+{% block title %}{{ shop.nom_commerce or 'Commerce' }}{% endblock %}
+
+{% block topbar_extra %}
+  <span style="color:var(--text-sec);font-size:14px;">{{ shop.nom_commerce or 'Commerce' }}</span>
+{% endblock %}
+
+{% block body %}
+<div class="page">
+
+  <div class="page-header">
+    <div>
+      <div class="breadcrumb"><a href="/admin">Dashboard</a> › Commerce</div>
+      <h1 id="shop-name-display">{{ shop.nom_commerce or 'Commerce sans nom' }}</h1>
+    </div>
+    <button class="btn btn-secondary" onclick="renameShop()">✏️ Renommer</button>
+    <button class="btn btn-danger" onclick="deleteShop()">Supprimer</button>
+  </div>
+
+  <!-- Lien public -->
+  <div class="card mb-4">
+    <div class="card-title">Lien de commande public</div>
+    <div class="link-box">
+      <code id="public-url">{{ public_url }}</code>
+      <button class="btn btn-secondary btn-sm" onclick="copyLink()">Copier</button>
+      <a href="{{ public_url }}" target="_blank" class="btn btn-secondary btn-sm">Ouvrir →</a>
+    </div>
+  </div>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;" class="two-col">
+
+    <!-- Stripe Connect -->
+    <div class="card">
+      <div class="card-title">Paiements Stripe Connect</div>
+      <div class="stripe-section" id="stripe-section">
+        {% if shop.stripe_onboarding_complete %}
+          <span class="badge badge-green">✓ Actif</span>
+          <span class="stripe-desc">Les paiements sont opérationnels. La commission plateforme (10% + 0.30€) est prélevée automatiquement.</span>
+        {% elif shop.stripe_account_id %}
+          <span class="badge badge-amber">En cours</span>
+          <span class="stripe-desc">L'onboarding Stripe n'est pas finalisé.</span>
+          <button class="btn btn-primary btn-sm" onclick="connectStripe()">Continuer l'onboarding →</button>
+        {% else %}
+          <span class="badge badge-grey">Non configuré</span>
+          <span class="stripe-desc">Connectez un compte Stripe Express pour activer les paiements en ligne.</span>
+          <button class="btn btn-primary btn-sm" onclick="connectStripe()" id="stripe-btn">Connecter Stripe →</button>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- Mise à jour menu -->
+    <div class="card">
+      <div class="card-title">Mettre à jour le catalogue</div>
+      <p style="font-size:13px;color:var(--text-sec);margin-bottom:14px;">
+        Uploadez une nouvelle photo de menu pour remplacer le catalogue actuel par extraction IA.
+      </p>
+      <input type="file" id="update-photo" accept="image/jpeg,image/png,image/webp" style="display:none"
+             onchange="updateMenu(this)">
+      <button class="btn btn-secondary btn-sm" onclick="document.getElementById('update-photo').click()">
+        📷 Nouvelle photo de menu
+      </button>
+    </div>
+  </div>
+
+  <!-- Catalogue produits -->
+  <div class="card">
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:18px;">
+      <div class="card-title" style="margin:0;">Catalogue</div>
+      <span class="badge badge-grey">{{ shop.total_produits or 0 }} produit{{ 's' if (shop.total_produits or 0) > 1 else '' }}</span>
+      <button class="btn btn-primary btn-sm ml-auto" onclick="addCategory()">+ Catégorie</button>
+    </div>
+
+    <div id="catalogue-root">
+    {% if shop.categories %}
+      {% for cat in shop.categories %}
+      <div class="cat-section" data-cat="{{ loop.index0 }}">
+        <div class="cat-header">
+          <div class="cat-name">{{ cat.nom_categorie }}</div>
+          <span class="badge badge-grey">{{ cat.produits|length }} produit{{ 's' if cat.produits|length > 1 else '' }}</span>
+          <button class="btn btn-ghost btn-sm ml-auto" onclick="addProduct({{ loop.index0 }})">+ Produit</button>
+        </div>
+        {% for prod in cat.produits %}
+        <div class="product-row" data-prod="{{ loop.index0 }}">
+          <div style="flex:1;min-width:0;">
+            <div class="p-name">{{ prod.nom }}</div>
+            {% if prod.description %}<div class="p-desc">{{ prod.description }}</div>{% endif %}
+          </div>
+          <div class="p-price">{{ '%.2f €'|format(prod.prix) if prod.prix is not none else '—' }}</div>
+          <div class="p-actions">
+            <button class="btn btn-ghost btn-sm" onclick="editProduct({{ loop.index0 - 1 + 1 - 1 }},{{ loop.index0 }})">✏️</button>
+            <button class="btn btn-danger btn-sm" onclick="deleteProduct({{ loop.index0 }},{{ loop.index0 }})">✕</button>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+      {% endfor %}
+    {% else %}
+      <div class="empty-state">
+        <span class="empty-icon">🍽</span>
+        <p>Aucun produit. Uploadez une photo de menu ou ajoutez des catégories manuellement.</p>
+      </div>
+    {% endif %}
+    </div>
+  </div>
+
+  <!-- Commandes -->
+  <div class="card mt-4">
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:18px;">
+      <div class="card-title" style="margin:0;">Commandes reçues</div>
+      <span class="badge badge-grey">{{ orders|length }}</span>
+    </div>
+
+    {% if orders %}
+    <div style="overflow-x:auto;">
+      <table class="orders-table">
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Client</th>
+            <th>Créneau</th>
+            <th>Articles</th>
+            <th>Total</th>
+            <th>Statut</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for o in orders %}
+          <tr>
+            <td style="color:var(--text-sec);white-space:nowrap;">{{ o.created_at or '—' }}</td>
+            <td>
+              <div style="font-weight:600;">{{ o.customer_name or '—' }}</div>
+              {% if o.customer_phone %}<div style="font-size:12px;color:var(--text-muted);">{{ o.customer_phone }}</div>{% endif %}
+            </td>
+            <td>{{ o.slot or '—' }}</td>
+            <td>
+              {% for it in (o.items or []) %}
+                <div style="font-size:13px;">{{ it.qty }}× {{ it.name }}</div>
+              {% endfor %}
+            </td>
+            <td style="font-weight:700;color:var(--primary);">{{ '%.2f €'|format(o.total or 0) }}</td>
+            <td><span class="badge badge-green order-status">{{ o.status or 'payée' }}</span></td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% else %}
+    <div class="empty-state" style="padding:32px 24px;">
+      <p>Aucune commande reçue pour ce commerce.</p>
+    </div>
+    {% endif %}
+  </div>
+
+</div>
+
+<div class="loading-overlay" id="loading">
+  <div class="spinner"></div>
+  <p id="loading-msg">Chargement…</p>
+</div>
+
+<!-- Edit modal -->
+<div id="edit-modal" style="display:none;position:fixed;inset:0;z-index:200;
+     background:rgba(0,0,0,.7);backdrop-filter:blur(6px);
+     align-items:center;justify-content:center;padding:24px;">
+  <div class="card" style="width:100%;max-width:440px;background:#1E293B;">
+    <div class="card-title" id="edit-modal-title">Modifier le produit</div>
+    <div class="field"><label>Nom</label><input type="text" class="input" id="edit-nom"></div>
+    <div class="field"><label>Prix (€)</label><input type="number" step="0.01" min="0" class="input" id="edit-prix"></div>
+    <div class="field"><label>Description</label><input type="text" class="input" id="edit-desc"></div>
+    <input type="hidden" id="edit-cat-idx">
+    <input type="hidden" id="edit-prod-idx">
+    <div style="display:flex;gap:10px;margin-top:4px;">
+      <button class="btn btn-primary" onclick="saveEdit()">Enregistrer</button>
+      <button class="btn btn-secondary" onclick="closeModal()">Annuler</button>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+const SHOP_ID = "{{ shop_id }}";
+
+// ── Copy link ──
+function copyLink() {
+  navigator.clipboard.writeText(document.getElementById('public-url').textContent)
+    .then(() => alert('Lien copié !'));
+}
+
+// ── Stripe ──
+function connectStripe() {
+  const btn = document.getElementById('stripe-btn');
+  if (btn) { btn.disabled = true; btn.textContent = '…'; }
+  fetch(`/admin/shop/${SHOP_ID}/connect-stripe`, { method:'POST' })
+    .then(r => r.json())
+    .then(d => {
+      if (d.onboarding_url) { window.location.href = d.onboarding_url; }
+      else { alert('Erreur : ' + (d.error || 'Inconnu')); if (btn) { btn.disabled=false; btn.textContent='Connecter Stripe →'; }}
+    });
+}
+
+// ── Menu update ──
+function updateMenu(input) {
+  const file = input.files[0];
+  if (!file) return;
+  const fd = new FormData();
+  fd.append('photo', file);
+  showLoading('Mise à jour du catalogue…');
+  fetch(`/api/shop/${SHOP_ID}/update-menu`, { method:'POST', body: fd })
+    .then(r => r.json())
+    .then(d => {
+      if (d.error) { alert(d.error); return; }
+      location.reload();
+    })
+    .catch(() => alert('Erreur réseau.'))
+    .finally(hideLoading);
+}
+
+// ── Product edit ──
+let _editCat = null, _editProd = null;
+
+function editProduct(catIdx, prodIdx) {
+  // Use data attributes from DOM
+  const catEl  = document.querySelectorAll('.cat-section')[catIdx];
+  const prodEl = catEl.querySelectorAll('.product-row')[prodIdx];
+  const nom    = prodEl.querySelector('.p-name').textContent.trim();
+  const desc   = prodEl.querySelector('.p-desc')?.textContent.trim() || '';
+  const priceText = prodEl.querySelector('.p-price').textContent.trim();
+  const prix   = priceText === '—' ? '' : parseFloat(priceText);
+
+  document.getElementById('edit-nom').value   = nom;
+  document.getElementById('edit-desc').value  = desc;
+  document.getElementById('edit-prix').value  = prix === '' ? '' : prix;
+  document.getElementById('edit-cat-idx').value  = catIdx;
+  document.getElementById('edit-prod-idx').value = prodIdx;
+  document.getElementById('edit-modal-title').textContent = 'Modifier le produit';
+  showModal();
+}
+
+function addProduct(catIdx) {
+  document.getElementById('edit-nom').value  = '';
+  document.getElementById('edit-desc').value = '';
+  document.getElementById('edit-prix').value = '';
+  document.getElementById('edit-cat-idx').value  = catIdx;
+  document.getElementById('edit-prod-idx').value = -1;
+  document.getElementById('edit-modal-title').textContent = 'Ajouter un produit';
+  showModal();
+}
+
+function saveEdit() {
+  const catIdx  = parseInt(document.getElementById('edit-cat-idx').value);
+  const prodIdx = parseInt(document.getElementById('edit-prod-idx').value);
+  const nom     = document.getElementById('edit-nom').value.trim();
+  const desc    = document.getElementById('edit-desc').value.trim();
+  const prxRaw  = document.getElementById('edit-prix').value.trim();
+  const prix    = prxRaw === '' ? null : parseFloat(prxRaw);
+
+  if (!nom) { alert('Nom requis.'); return; }
+
+  const payload = prodIdx === -1
+    ? { action:'add', cat_idx: catIdx, nom, prix, description: desc||null }
+    : { action:'update', cat_idx: catIdx, prod_idx: prodIdx, nom, prix, description: desc||null };
+
+  fetch(`/api/shop/${SHOP_ID}/edit`, {
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body: JSON.stringify(payload),
+  })
+    .then(r => r.json())
+    .then(d => { if (d.success) location.reload(); else alert(d.error); });
+  closeModal();
+}
+
+function deleteProduct(catIdx, prodIdx) {
+  if (!confirm('Supprimer ce produit ?')) return;
+  fetch(`/api/shop/${SHOP_ID}/edit`, {
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({ action:'delete', cat_idx: catIdx, prod_idx: prodIdx }),
+  }).then(() => location.reload());
+}
+
+function addCategory() {
+  const name = prompt('Nom de la nouvelle catégorie :');
+  if (!name) return;
+  // We inject a local empty category — on next real save it'll persist
+  // Actually: reload after pseudo-add. For now, alert and manual product add.
+  alert('Ajout de catégorie non encore disponible. Utilisez "Mettre à jour le catalogue" avec une photo.');
+}
+
+// ── Rename shop ──
+function renameShop() {
+  const current = document.getElementById('shop-name-display').textContent;
+  const name = prompt('Nouveau nom :', current);
+  if (!name || name === current) return;
+  fetch(`/api/shop/${SHOP_ID}/rename`, {
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({ nom: name }),
+  })
+    .then(r => r.json())
+    .then(d => { if (d.success) location.reload(); else alert(d.error); });
+}
+
+// ── Delete shop ──
+function deleteShop() {
+  if (!confirm(`Supprimer ce commerce et toutes ses données ? Cette action est irréversible.`)) return;
+  fetch(`/api/shop/${SHOP_ID}/delete`, { method:'POST' })
+    .then(() => { window.location.href = '/admin'; });
+}
+
+// ── Modal ──
+function showModal() { document.getElementById('edit-modal').style.display = 'flex'; }
+function closeModal() { document.getElementById('edit-modal').style.display = 'none'; }
+document.getElementById('edit-modal').addEventListener('click', e => {
+  if (e.target === e.currentTarget) closeModal();
+});
+
+// ── Loading ──
+function showLoading(msg) {
+  document.getElementById('loading-msg').textContent = msg || 'Chargement…';
+  document.getElementById('loading').classList.add('visible');
+}
+function hideLoading() { document.getElementById('loading').classList.remove('visible'); }
+
+// ── Stripe return check ──
+if (new URLSearchParams(location.search).get('stripe_return')) {
+  fetch(`/api/shop/${SHOP_ID}/stripe-status`)
+    .then(r => r.json())
+    .then(d => {
+      if (d.ready) {
+        document.getElementById('stripe-section').innerHTML =
+          `<span class="badge badge-green">✓ Actif</span>
+           <span class="stripe-desc">Paiements opérationnels. Commission 10% + 0.30€ prélevée automatiquement.</span>`;
+      }
+    });
+}
+
+// ── Fix edit/delete button indices (Jinja loop.index0 in onclick is wrong) ──
+document.querySelectorAll('.cat-section').forEach((catEl, ci) => {
+  catEl.querySelectorAll('.product-row').forEach((row, pi) => {
+    const btns = row.querySelectorAll('.p-actions .btn');
+    if (btns[0]) btns[0].onclick = () => editProduct(ci, pi);
+    if (btns[1]) btns[1].onclick = () => deleteProduct(ci, pi);
+  });
+  const addBtn = catEl.querySelector('.cat-header .btn');
+  if (addBtn) addBtn.onclick = () => addProduct(ci);
+});
+</script>
+
+<style>
+@media (max-width:640px) {
+  .two-col { grid-template-columns: 1fr !important; }
+}
+</style>
+{% endblock %}

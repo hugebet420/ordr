@@ -1,0 +1,264 @@
+{% extends "base.html" %}
+{% block title %}Nouveau commerce{% endblock %}
+
+{% block body %}
+<div class="page-narrow">
+  <div class="page-header">
+    <div>
+      <div class="breadcrumb"><a href="/admin">Dashboard</a> › Nouveau commerce</div>
+      <h1>Ajouter un commerce</h1>
+    </div>
+  </div>
+
+  <!-- Tabs -->
+  <div class="tabs">
+    <button class="tab-btn active" onclick="showTab('photo')">📷 Photo de menu</button>
+    <button class="tab-btn" onclick="showTab('google')">🔍 Recherche Google</button>
+    <button class="tab-btn" onclick="showTab('manual')">✏️ Saisie manuelle</button>
+  </div>
+
+  <!-- Tab : Photo -->
+  <div id="tab-photo">
+    <div class="card">
+      <div class="card-title">Extraction automatique par photo</div>
+      <p style="font-size:14px;color:var(--text-sec);margin-bottom:20px;line-height:1.6;">
+        Uploadez une photo de carte ou menu — l'IA extrait automatiquement tous les produits et leurs prix.
+      </p>
+      <div class="upload-zone" id="upload-zone" onclick="document.getElementById('photo-file').click()">
+        <span class="icon">📷</span>
+        <p><strong>Cliquez pour choisir une photo</strong> ou glissez-la ici</p>
+        <p style="margin-top:6px;font-size:12px;">JPG, PNG, WebP · Max 10 Mo</p>
+      </div>
+      <input type="file" id="photo-file" accept="image/jpeg,image/png,image/webp" style="display:none">
+      <div id="photo-preview" style="display:none;margin-top:16px;">
+        <img id="preview-img" style="max-width:100%;border-radius:10px;border:1px solid var(--border);">
+        <button class="btn btn-primary" onclick="submitPhoto()" id="extract-btn"
+                style="width:100%;justify-content:center;margin-top:14px;">
+          ✨ Extraire le catalogue
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tab : Google Places -->
+  <div id="tab-google" style="display:none">
+    <div class="card">
+      <div class="card-title">Recherche Google Places</div>
+      <p style="font-size:14px;color:var(--text-sec);margin-bottom:20px;line-height:1.6;">
+        Recherchez le commerce par son nom et ville pour pré-remplir ses informations.
+        (Clé <code>GOOGLE_PLACES_API_KEY</code> requise)
+      </p>
+      <div class="field">
+        <label>Nom du commerce + ville</label>
+        <input type="text" class="input" id="google-query"
+               placeholder="Ex : Boulangerie Paul Paris 8ème"
+               onkeydown="if(event.key==='Enter') submitGoogle()">
+      </div>
+      <button class="btn btn-primary" onclick="submitGoogle()" id="google-btn">
+        🔍 Rechercher
+      </button>
+    </div>
+  </div>
+
+  <!-- Tab : Manuel -->
+  <div id="tab-manual" style="display:none">
+    <div class="card">
+      <div class="card-title">Création manuelle</div>
+      <div class="field">
+        <label>Nom du commerce *</label>
+        <input type="text" class="input" id="manual-name" placeholder="Ex : Café de la Paix">
+      </div>
+      <div class="field">
+        <label>Adresse <span style="color:var(--text-muted);font-weight:400">(optionnel)</span></label>
+        <input type="text" class="input" id="manual-addr" placeholder="Ex : 12 rue de Rivoli, Paris">
+      </div>
+      <button class="btn btn-primary" onclick="submitManual()">
+        Créer le commerce →
+      </button>
+    </div>
+  </div>
+
+  <!-- Résultat extraction -->
+  <div id="result-section" style="display:none;margin-top:24px;">
+    <div class="card">
+      <div class="preview-header">
+        <div id="res-name" class="preview-name"></div>
+        <span id="res-confiance" class="confiance"></span>
+      </div>
+      <div id="res-warnings"></div>
+      <div id="res-categories"></div>
+      <div style="margin-top:20px;padding-top:16px;border-top:1px solid var(--border);display:flex;gap:10px;flex-wrap:wrap;">
+        <button class="btn btn-primary" onclick="confirmCreate()" id="confirm-btn">
+          ✓ Créer ce commerce
+        </button>
+        <button class="btn btn-secondary" onclick="resetForm()">Recommencer</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="error-box" style="display:none;margin-top:16px;"></div>
+</div>
+
+<div class="loading-overlay" id="loading">
+  <div class="spinner"></div>
+  <p id="loading-msg">Extraction en cours…</p>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+let pendingShopId = null;
+
+function showTab(name) {
+  ['photo','google','manual'].forEach(t => {
+    document.getElementById('tab-'+t).style.display = t===name ? '' : 'none';
+    document.querySelectorAll('.tab-btn')[['photo','google','manual'].indexOf(t)].classList.toggle('active', t===name);
+  });
+}
+
+// ── Photo ──
+document.getElementById('photo-file').addEventListener('change', function() {
+  const file = this.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    document.getElementById('preview-img').src = e.target.result;
+    document.getElementById('photo-preview').style.display = '';
+  };
+  reader.readAsDataURL(file);
+});
+
+const zone = document.getElementById('upload-zone');
+zone.addEventListener('dragover', e => { e.preventDefault(); zone.classList.add('dragover'); });
+zone.addEventListener('dragleave', () => zone.classList.remove('dragover'));
+zone.addEventListener('drop', e => {
+  e.preventDefault(); zone.classList.remove('dragover');
+  if (e.dataTransfer.files.length) {
+    document.getElementById('photo-file').files = e.dataTransfer.files;
+    document.getElementById('photo-file').dispatchEvent(new Event('change'));
+  }
+});
+
+function submitPhoto() {
+  const file = document.getElementById('photo-file').files[0];
+  if (!file) return;
+  const fd = new FormData();
+  fd.append('photo', file);
+  showLoading('Analyse de la photo…');
+  fetch('/api/extract-menu', { method:'POST', body: fd })
+    .then(r => r.json())
+    .then(handleResult)
+    .catch(() => showError('Erreur réseau. Réessayez.'))
+    .finally(hideLoading);
+}
+
+// ── Google ──
+function submitGoogle() {
+  const q = document.getElementById('google-query').value.trim();
+  if (!q) return;
+  const fd = new FormData();
+  fd.append('google_query', q);
+  showLoading('Recherche Google Places…');
+  fetch('/api/extract-menu', { method:'POST', body: fd })
+    .then(r => r.json())
+    .then(handleResult)
+    .catch(() => showError('Erreur réseau.'))
+    .finally(hideLoading);
+}
+
+// ── Manuel ──
+function submitManual() {
+  const name = document.getElementById('manual-name').value.trim();
+  const addr = document.getElementById('manual-addr').value.trim();
+  if (!name) { alert('Le nom du commerce est requis.'); return; }
+  showLoading('Création du commerce…');
+  fetch('/api/shop/create-manual', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ nom: name, adresse: addr }),
+  })
+    .then(r => r.json())
+    .then(data => {
+      if (data.error) { showError(data.error); return; }
+      window.location.href = `/admin/shop/${data.shop_id}`;
+    })
+    .catch(() => showError('Erreur réseau.'))
+    .finally(hideLoading);
+}
+
+// ── Result handler ──
+function handleResult(data) {
+  if (data.error) { showError(data.error); return; }
+  pendingShopId = data.shop_id;
+  const cat = data.catalogue;
+
+  document.getElementById('res-name').textContent = cat.nom_commerce || 'Commerce sans nom';
+
+  const conf = cat.confiance || '';
+  const confEl = document.getElementById('res-confiance');
+  confEl.textContent = 'Confiance ' + conf;
+  confEl.className = 'confiance confiance-' + conf;
+
+  // Warnings
+  const wEl = document.getElementById('res-warnings');
+  wEl.innerHTML = (cat.avertissements || []).length
+    ? `<div class="warnings mb-2"><ul>${(cat.avertissements||[]).map(w=>`<li>${w}</li>`).join('')}</ul></div>`
+    : '';
+
+  // Categories
+  const cEl = document.getElementById('res-categories');
+  cEl.innerHTML = (cat.categories || []).map(c => `
+    <div style="margin-bottom:16px;">
+      <div class="cat-header"><div class="cat-name">${esc(c.nom_categorie)}</div>
+        <span class="badge badge-grey">${c.produits?.length||0} produit${(c.produits?.length||0)>1?'s':''}</span>
+      </div>
+      ${(c.produits||[]).map(p => `
+        <div class="product-row">
+          <div style="flex:1;min-width:0;">
+            <div class="p-name">${esc(p.nom)}</div>
+            ${p.description ? `<div class="p-desc">${esc(p.description)}</div>` : ''}
+          </div>
+          <div class="p-price">${p.prix !== null && p.prix !== undefined ? p.prix.toFixed(2)+' €' : '—'}</div>
+        </div>`).join('')}
+    </div>`).join('');
+
+  document.getElementById('result-section').style.display = '';
+  document.getElementById('result-section').scrollIntoView({ behavior:'smooth', block:'start' });
+}
+
+function confirmCreate() {
+  if (!pendingShopId) return;
+  document.getElementById('confirm-btn').textContent = '…';
+  document.getElementById('confirm-btn').disabled = true;
+  window.location.href = `/admin/shop/${pendingShopId}`;
+}
+
+function resetForm() {
+  pendingShopId = null;
+  document.getElementById('result-section').style.display = 'none';
+  document.getElementById('photo-file').value = '';
+  document.getElementById('photo-preview').style.display = 'none';
+  document.getElementById('google-query').value = '';
+  document.getElementById('error-box').style.display = 'none';
+}
+
+function showLoading(msg) {
+  document.getElementById('loading-msg').textContent = msg || 'Chargement…';
+  document.getElementById('loading').classList.add('visible');
+}
+function hideLoading() { document.getElementById('loading').classList.remove('visible'); }
+
+function showError(msg) {
+  const el = document.getElementById('error-box');
+  el.style.display = '';
+  el.innerHTML = `<div style="background:var(--danger-bg);border:1px solid rgba(239,68,68,.3);
+    border-radius:var(--radius);padding:14px 18px;color:var(--danger);font-size:14px;font-weight:500;">
+    ⚠️ ${msg}</div>`;
+}
+
+function esc(s) {
+  return (s||'').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+</script>
+{% endblock %}

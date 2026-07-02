@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Commande confirmée – ORDR</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{font-size:16px;-webkit-font-smoothing:antialiased}
+body{font-family:'Inter',system-ui,sans-serif;background:#F8FAFC;min-height:100vh;
+     display:flex;align-items:center;justify-content:center;padding:24px;color:#0F172A;}
+.card{background:#fff;border-radius:20px;border:1px solid #E2E8F0;
+      padding:36px 32px;max-width:420px;width:100%;text-align:center;
+      box-shadow:0 4px 24px rgba(0,0,0,.08);}
+.check{width:64px;height:64px;background:#D1FAE5;border-radius:50%;
+       display:flex;align-items:center;justify-content:center;margin:0 auto 20px;font-size:30px;}
+h1{font-size:22px;font-weight:800;margin-bottom:8px;}
+.sub{font-size:14px;color:#64748B;margin-bottom:24px;line-height:1.6;}
+.order-info{background:#F8FAFC;border-radius:12px;padding:16px;text-align:left;margin-bottom:24px;}
+.info-row{display:flex;justify-content:space-between;padding:6px 0;font-size:14px;border-bottom:1px solid #E2E8F0;}
+.info-row:last-child{border-bottom:none;}
+.info-label{color:#64748B;font-weight:500;}
+.info-val{font-weight:700;}
+.items-section{margin-bottom:20px;text-align:left;}
+.items-section h3{font-size:12px;font-weight:700;text-transform:uppercase;
+  letter-spacing:.06em;color:#94A3B8;margin-bottom:10px;}
+.item-row{display:flex;justify-content:space-between;font-size:14px;padding:5px 0;
+          border-bottom:1px solid #F1F5F9;}
+.item-row:last-child{border-bottom:none;}
+.total-row{display:flex;justify-content:space-between;font-size:16px;font-weight:800;
+           padding:12px 0;border-top:2px solid #E2E8F0;margin-top:8px;}
+.btn-back{display:inline-block;margin-top:4px;padding:13px 24px;
+          background:#10B981;color:#fff;border-radius:12px;font-family:inherit;
+          font-size:15px;font-weight:700;text-decoration:none;
+          transition:background .15s;}
+.btn-back:active{background:#059669;}
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="check">✓</div>
+  <h1>Commande confirmée !</h1>
+  <p class="sub">
+    {% if shop %}Votre commande chez <strong>{{ shop.nom_commerce }}</strong> est bien enregistrée.{% else %}Votre commande est bien enregistrée.{% endif %}
+    Vous recevrez une notification à la boutique.
+  </p>
+
+  {% if order %}
+  <div class="order-info">
+    {% if order.customer_name %}
+    <div class="info-row">
+      <span class="info-label">Prénom</span>
+      <span class="info-val">{{ order.customer_name }}</span>
+    </div>
+    {% endif %}
+    {% if order.slot %}
+    <div class="info-row">
+      <span class="info-label">Créneau</span>
+      <span class="info-val">{{ order.slot }}</span>
+    </div>
+    {% endif %}
+    {% if order.customer_phone %}
+    <div class="info-row">
+      <span class="info-label">Téléphone</span>
+      <span class="info-val">{{ order.customer_phone }}</span>
+    </div>
+    {% endif %}
+  </div>
+
+  {% if order.items %}
+  <div class="items-section">
+    <h3>Votre commande</h3>
+    {% for it in order.items %}
+    <div class="item-row">
+      <span>{{ it.qty }}× {{ it.name }}</span>
+      <span>{{ '%.2f €'|format(it.price * it.qty if it.price else 0) }}</span>
+    </div>
+    {% endfor %}
+    <div class="total-row">
+      <span>Total payé</span>
+      <span style="color:#10B981;">{{ '%.2f €'|format(order.total or 0) }}</span>
+    </div>
+  </div>
+  {% endif %}
+  {% endif %}
+
+  {% if shop %}
+  <a href="/shop/{{ request.args.get('shop', '') }}" class="btn-back">Commander à nouveau</a>
+  {% endif %}
+</div>
+</body>
+</html>

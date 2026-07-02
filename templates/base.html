@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>{% block title %}ORDR{% endblock %} — Admin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/static/style.css">
+{% block head %}{% endblock %}
+</head>
+<body>
+
+<header class="topbar">
+  <a href="/admin" class="logo">ORDR<span>.</span></a>
+  {% block topbar_extra %}{% endblock %}
+  <div class="topbar-actions">
+    {% block topbar_actions %}
+    <a href="/admin/logout" class="btn btn-ghost btn-sm">Déconnexion</a>
+    {% endblock %}
+  </div>
+</header>
+
+{% block body %}{% endblock %}
+
+{% block scripts %}{% endblock %}
+</body>
+</html>

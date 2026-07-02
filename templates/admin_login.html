@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ORDR — Connexion</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+<div class="login-wrap">
+  <div class="login-box">
+    <div class="login-logo">ORDR.</div>
+    <p class="login-subtitle">Plateforme Click &amp; Collect · Administration</p>
+
+    <div class="card">
+      {% if error %}
+      <div style="background:var(--danger-bg);border:1px solid rgba(239,68,68,.3);
+                  border-radius:10px;padding:12px 14px;margin-bottom:18px;
+                  color:var(--danger);font-size:14px;font-weight:500;">
+        {{ error }}
+      </div>
+      {% endif %}
+
+      <form method="POST" action="/admin/login">
+        <div class="field">
+          <label for="pwd">Mot de passe</label>
+          <input id="pwd" name="password" type="password" class="input"
+                 placeholder="••••••••" autofocus autocomplete="current-password">
+        </div>
+        <button type="submit" class="btn btn-primary" style="width:100%;justify-content:center;margin-top:4px;">
+          Accéder au tableau de bord
+        </button>
+      </form>
+    </div>
+
+    <p style="text-align:center;margin-top:20px;font-size:12px;color:var(--text-muted);">
+      Définissez <code>ADMIN_PASSWORD</code> dans vos variables d'environnement.
+    </p>
+  </div>
+</div>
+</body>
+</html>
