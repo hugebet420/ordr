@@ -1,17 +1,10 @@
 """
-menu_extractor.py — Extraction catalogue par Claude Vision ou Google Places
+menu_extractor.py — Extraction catalogue par Gemini (gratuit) ou Claude Vision
+Priorité : GEMINI_API_KEY → ANTHROPIC_API_KEY
 """
 
 from __future__ import annotations
 import os, json, base64, re, time
-from anthropic import Anthropic
-
-client = Anthropic()
-
-_SYSTEM = (
-    "Tu es un expert en extraction de menus de restaurants et catalogues de produits. "
-    "Tu réponds UNIQUEMENT en JSON valide, sans texte avant ni après, sans bloc markdown."
-)
 
 _PROMPT = """Analyse cette image et extrais tous les produits/articles visibles.
 
@@ -35,6 +28,7 @@ Règles :
 - confiance = haute / moyenne / basse selon lisibilité
 - Regroupe par catégories logiques (entrées, plats, desserts, boissons, formules…)
 - Si texte illisible → avertissement explicite dans le tableau
+- Réponds UNIQUEMENT en JSON valide, sans texte avant ni après, sans markdown
 """
 
 
@@ -63,18 +57,43 @@ def _validate(data: dict) -> dict:
     return data
 
 
-def extract_from_image(image_bytes: bytes, filename: str) -> dict:
-    ext = (filename.rsplit(".", 1)[-1].lower()) if "." in filename else "jpeg"
-    mime = {"jpg": "image/jpeg", "jpeg": "image/jpeg",
-            "png": "image/png", "webp": "image/webp"}.get(ext, "image/jpeg")
-    b64 = base64.standard_b64encode(image_bytes).decode()
+def _extract_gemini(image_bytes: bytes, mime: str) -> dict:
+    import google.generativeai as genai
+    genai.configure(api_key=os.environ["GEMINI_API_KEY"])
+    model = genai.GenerativeModel("gemini-1.5-flash")
+    for attempt in range(2):
+        try:
+            resp = model.generate_content([
+                {"mime_type": mime, "data": image_bytes},
+                _PROMPT,
+            ])
+            return _validate(_parse(resp.text))
+        except json.JSONDecodeError as e:
+            if attempt == 0:
+                time.sleep(1)
+                continue
+            return {"erreur": "JSON invalide retourné par l'IA", "detail": str(e)}
+        except Exception as e:
+            if attempt == 0:
+                time.sleep(1)
+                continue
+            return {"erreur": "Extraction échouée", "detail": str(e)}
+    return {"erreur": "Extraction échouée après 2 tentatives"}
 
+
+def _extract_claude(image_bytes: bytes, mime: str) -> dict:
+    from anthropic import Anthropic
+    client = Anthropic()
+    b64 = base64.standard_b64encode(image_bytes).decode()
     for attempt in range(2):
         try:
             resp = client.messages.create(
                 model="claude-opus-4-5",
                 max_tokens=4096,
-                system=_SYSTEM,
+                system=(
+                    "Tu es un expert en extraction de menus. "
+                    "Tu réponds UNIQUEMENT en JSON valide, sans texte avant ni après."
+                ),
                 messages=[{
                     "role": "user",
                     "content": [
@@ -94,8 +113,19 @@ def extract_from_image(image_bytes: bytes, filename: str) -> dict:
                 time.sleep(1.5)
                 continue
             return {"erreur": "Extraction échouée", "detail": str(e)}
-
     return {"erreur": "Extraction échouée après 2 tentatives"}
+
+
+def extract_from_image(image_bytes: bytes, filename: str) -> dict:
+    ext  = filename.rsplit(".", 1)[-1].lower() if "." in filename else "jpeg"
+    mime = {"jpg": "image/jpeg", "jpeg": "image/jpeg",
+            "png": "image/png", "webp": "image/webp"}.get(ext, "image/jpeg")
+
+    if os.environ.get("GEMINI_API_KEY"):
+        return _extract_gemini(image_bytes, mime)
+    if os.environ.get("ANTHROPIC_API_KEY"):
+        return _extract_claude(image_bytes, mime)
+    return {"erreur": "Aucune clé IA configurée", "detail": "Ajoutez GEMINI_API_KEY ou ANTHROPIC_API_KEY"}
 
 
 def extract_from_google_places(query: str) -> dict | None:
@@ -114,16 +144,15 @@ def extract_from_google_places(query: str) -> dict | None:
             return None
         place = results[0]
         return {
-            "nom_commerce": place.get("name", query),
-            "adresse": place.get("formatted_address", ""),
-            "categories": [],
+            "nom_commerce":  place.get("name", query),
+            "adresse":       place.get("formatted_address", ""),
+            "categories":    [],
             "total_produits": 0,
             "avertissements": [
-                "Commerce créé via Google Places — aucun menu automatique disponible. "
-                "Ajoutez les produits manuellement ou uploadez une photo de menu."
+                "Commerce créé via Google Places — uploadez une photo de menu pour ajouter les produits."
             ],
             "confiance": "basse",
-            "source": "google_places",
+            "source":    "google_places",
         }
     except Exception:
         return None
