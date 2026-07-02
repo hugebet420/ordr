@@ -57,6 +57,46 @@ def _validate(data: dict) -> dict:
     return data
 
 
+def _extract_mistral(image_bytes: bytes, mime: str) -> dict:
+    import urllib.request
+    b64 = base64.standard_b64encode(image_bytes).decode()
+    payload = json.dumps({
+        "model": "pixtral-12b-2409",
+        "messages": [{
+            "role": "user",
+            "content": [
+                {"type": "text", "text": _PROMPT},
+                {"type": "image_url", "image_url": {"url": f"data:{mime};base64,{b64}"}},
+            ],
+        }],
+        "max_tokens": 4096,
+    }).encode()
+    for attempt in range(2):
+        try:
+            req = urllib.request.Request(
+                "https://api.mistral.ai/v1/chat/completions",
+                data=payload,
+                headers={
+                    "Content-Type": "application/json",
+                    "Authorization": f"Bearer {os.environ['MISTRAL_API_KEY']}",
+                },
+            )
+            with urllib.request.urlopen(req, timeout=30) as r:
+                text = json.loads(r.read())["choices"][0]["message"]["content"]
+            return _validate(_parse(text))
+        except json.JSONDecodeError as e:
+            if attempt == 0:
+                time.sleep(1)
+                continue
+            return {"erreur": "JSON invalide retourné par l'IA", "detail": str(e)}
+        except Exception as e:
+            if attempt == 0:
+                time.sleep(1)
+                continue
+            return {"erreur": "Extraction échouée", "detail": str(e)}
+    return {"erreur": "Extraction échouée après 2 tentatives"}
+
+
 def _extract_gemini(image_bytes: bytes, mime: str) -> dict:
     import google.generativeai as genai
     genai.configure(api_key=os.environ["GEMINI_API_KEY"])
@@ -121,11 +161,13 @@ def extract_from_image(image_bytes: bytes, filename: str) -> dict:
     mime = {"jpg": "image/jpeg", "jpeg": "image/jpeg",
             "png": "image/png", "webp": "image/webp"}.get(ext, "image/jpeg")
 
+    if os.environ.get("MISTRAL_API_KEY"):
+        return _extract_mistral(image_bytes, mime)
     if os.environ.get("GEMINI_API_KEY"):
         return _extract_gemini(image_bytes, mime)
     if os.environ.get("ANTHROPIC_API_KEY"):
         return _extract_claude(image_bytes, mime)
-    return {"erreur": "Aucune clé IA configurée", "detail": "Ajoutez GEMINI_API_KEY ou ANTHROPIC_API_KEY"}
+    return {"erreur": "Aucune clé IA configurée", "detail": "Ajoutez MISTRAL_API_KEY, GEMINI_API_KEY ou ANTHROPIC_API_KEY"}
 
 
 def extract_from_google_places(query: str) -> dict | None:
