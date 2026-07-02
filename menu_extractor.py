@@ -66,11 +66,30 @@ crée 3 produits séparés.
 - Les suppléments ("+1€ fromage", "+0.50€ sauce") → crée un produit "Supplément fromage" avec prix = 1.0.
   Ne les fusionne jamais avec le produit principal.
 
-═══ FORMULES ET MENUS ═══
+═══ FORMULES ET MENUS COMPOSÉS ═══
 
-Une formule composée (ex: "Menu midi : entrée + plat + dessert ... 15€") = UN SEUL produit.
-→ {"nom": "Menu midi", "prix": 15.0, "description": "Entrée + plat + dessert"}
-Ne la découpe JAMAIS en produits séparés.
+Si une formule propose des composants AU CHOIX (entrée + plat + dessert, boisson + plat, etc.),
+crée UN produit avec un champ "composants" qui référence les produits déjà extraits dans le menu.
+
+Format attendu :
+{
+  "nom": "Menu midi",
+  "prix": 15.0,
+  "description": "Entrée + plat + dessert au choix",
+  "composants": [
+    {"label": "Votre entrée",   "obligatoire": true, "choix": ["Salade César", "Soupe du jour", "Terrine"]},
+    {"label": "Votre plat",     "obligatoire": true, "choix": ["Steak frites", "Poulet rôti", "Risotto"]},
+    {"label": "Votre dessert",  "obligatoire": true, "choix": ["Crème brûlée", "Tarte maison"]}
+  ]
+}
+
+Règles formules :
+- Peuple les "choix" avec les noms EXACTS des produits que tu as extraits dans les catégories correspondantes.
+- Si la formule mentionne "boisson incluse" ou "boisson au choix", ajoute un composant "Votre boisson".
+- Si un nombre est précisé ("2 plats au choix"), indique-le dans le label : "Votre plat (2 au choix)".
+- obligatoire = true sauf si la formule indique explicitement que le composant est optionnel.
+- Un produit SANS champ "composants" = produit standard sans choix, ne mets pas le champ du tout.
+- Ne JAMAIS découper une formule en produits séparés.
 
 ═══ PRODUITS SPÉCIAUX ═══
 

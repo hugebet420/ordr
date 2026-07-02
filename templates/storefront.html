@@ -16,126 +16,80 @@
   --text: #0F172A;
   --text-sec: #64748B;
   --radius: 14px;
-  --cart-bg: #fff;
 }
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 html { font-size: 16px; -webkit-font-smoothing: antialiased; }
 body { font-family: 'Inter', system-ui, sans-serif; background: var(--bg); color: var(--text); padding-bottom: 120px; }
 
 /* ── Header ── */
-.store-header {
-  background: var(--primary);
-  color: #fff;
-  padding: 20px 20px 16px;
-  position: sticky; top: 0; z-index: 50;
-}
+.store-header { background: var(--primary); color: #fff; padding: 20px 20px 16px; position: sticky; top: 0; z-index: 50; }
 .store-name { font-size: 20px; font-weight: 800; letter-spacing: -.3px; }
 .store-addr { font-size: 13px; opacity: .8; margin-top: 2px; }
 
 /* ── Category tabs ── */
-.cat-tabs {
-  background: #fff; border-bottom: 1px solid var(--border);
-  display: flex; gap: 0; overflow-x: auto; scrollbar-width: none;
-  position: sticky; top: 64px; z-index: 40;
-}
+.cat-tabs { background: #fff; border-bottom: 1px solid var(--border); display: flex; overflow-x: auto; scrollbar-width: none; position: sticky; top: 64px; z-index: 40; }
 .cat-tabs::-webkit-scrollbar { display: none; }
-.cat-tab {
-  padding: 13px 18px; font-size: 14px; font-weight: 600;
-  white-space: nowrap; border: none; background: transparent;
-  color: var(--text-sec); cursor: pointer; border-bottom: 2px solid transparent;
-  transition: color .15s, border-color .15s;
-}
+.cat-tab { padding: 13px 18px; font-size: 14px; font-weight: 600; white-space: nowrap; border: none; background: transparent; color: var(--text-sec); cursor: pointer; border-bottom: 2px solid transparent; transition: color .15s, border-color .15s; }
 .cat-tab.active { color: var(--primary); border-bottom-color: var(--primary); }
 
-/* ── Product list ── */
+/* ── Product cards ── */
 .products { padding: 12px 16px; }
-.product-card {
-  background: var(--surface); border-radius: var(--radius);
-  border: 1px solid var(--border); padding: 14px 16px;
-  display: flex; gap: 14px; align-items: center; margin-bottom: 10px;
-}
-.product-card .p-info { flex: 1; min-width: 0; }
-.product-card .p-name { font-size: 15px; font-weight: 700; line-height: 1.3; }
-.product-card .p-desc { font-size: 13px; color: var(--text-sec); margin-top: 3px; line-height: 1.4; }
-.product-card .p-price { font-size: 16px; font-weight: 800; color: var(--primary); margin-top: 6px; }
-.product-card .p-right { display: flex; flex-direction: column; align-items: flex-end; gap: 8px; flex-shrink: 0; }
-.add-btn {
-  width: 36px; height: 36px; border-radius: 10px; border: none;
-  background: var(--primary); color: #fff; font-size: 22px; line-height: 1;
-  cursor: pointer; display: flex; align-items: center; justify-content: center;
-  transition: background .15s; flex-shrink: 0;
-}
+.product-card { background: var(--surface); border-radius: var(--radius); border: 1px solid var(--border); padding: 14px 16px; display: flex; gap: 14px; align-items: center; margin-bottom: 10px; }
+.p-info { flex: 1; min-width: 0; }
+.p-name { font-size: 15px; font-weight: 700; line-height: 1.3; }
+.p-desc { font-size: 13px; color: var(--text-sec); margin-top: 3px; line-height: 1.4; }
+.p-price { font-size: 16px; font-weight: 800; color: var(--primary); margin-top: 6px; }
+.p-right { display: flex; flex-direction: column; align-items: flex-end; gap: 8px; flex-shrink: 0; }
+.add-btn { width: 36px; height: 36px; border-radius: 10px; border: none; background: var(--primary); color: #fff; font-size: 22px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background .15s; flex-shrink: 0; }
 .add-btn:active { background: var(--primary-h); transform: scale(.93); }
+.add-btn.has-composants { width: auto; padding: 0 14px; font-size: 14px; font-weight: 700; gap: 4px; }
 .qty-ctrl { display: flex; align-items: center; gap: 6px; }
-.qty-btn {
-  width: 30px; height: 30px; border-radius: 8px; border: 1.5px solid var(--border);
-  background: #fff; font-size: 18px; line-height: 1; cursor: pointer;
-  display: flex; align-items: center; justify-content: center; font-weight: 700;
-  transition: all .12s;
-}
-.qty-btn:active { background: var(--bg); }
+.qty-btn { width: 30px; height: 30px; border-radius: 8px; border: 1.5px solid var(--border); background: #fff; font-size: 18px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-weight: 700; }
 .qty-num { font-size: 15px; font-weight: 700; min-width: 16px; text-align: center; }
 
-/* ── Cart bottom sheet ── */
-.cart-bar {
-  position: fixed; bottom: 0; left: 0; right: 0; z-index: 80;
-  background: var(--primary); color: #fff;
-  padding: 14px 20px; display: flex; align-items: center; gap: 12px;
-  box-shadow: 0 -4px 20px rgba(0,0,0,.12);
-  transform: translateY(100%); transition: transform .25s cubic-bezier(.22,1,.36,1);
-}
+/* ── Cart bar ── */
+.cart-bar { position: fixed; bottom: 0; left: 0; right: 0; z-index: 80; background: var(--primary); color: #fff; padding: 14px 20px; display: flex; align-items: center; gap: 12px; box-shadow: 0 -4px 20px rgba(0,0,0,.12); transform: translateY(100%); transition: transform .25s cubic-bezier(.22,1,.36,1); }
 .cart-bar.visible { transform: translateY(0); }
-.cart-bar-count {
-  background: rgba(255,255,255,.25); border-radius: 999px;
-  padding: 3px 10px; font-size: 13px; font-weight: 700; flex-shrink: 0;
-}
+.cart-bar-count { background: rgba(255,255,255,.25); border-radius: 999px; padding: 3px 10px; font-size: 13px; font-weight: 700; flex-shrink: 0; }
 .cart-bar-label { flex: 1; font-size: 15px; font-weight: 700; }
 .cart-bar-total { font-size: 17px; font-weight: 800; flex-shrink: 0; }
 
-/* ── Checkout sheet ── */
-.sheet-overlay {
-  display: none; position: fixed; inset: 0; z-index: 100;
-  background: rgba(0,0,0,.5); backdrop-filter: blur(3px);
-}
+/* ── Sheets ── */
+.sheet-overlay { display: none; position: fixed; inset: 0; z-index: 100; background: rgba(0,0,0,.5); backdrop-filter: blur(3px); }
 .sheet-overlay.open { display: block; }
-.sheet {
-  position: fixed; bottom: 0; left: 0; right: 0; z-index: 110;
-  background: #fff; border-radius: 20px 20px 0 0;
-  padding: 0; transform: translateY(100%);
-  transition: transform .3s cubic-bezier(.22,1,.36,1);
-  max-height: 90vh; overflow-y: auto;
-}
+.sheet { position: fixed; bottom: 0; left: 0; right: 0; z-index: 110; background: #fff; border-radius: 20px 20px 0 0; transform: translateY(100%); transition: transform .3s cubic-bezier(.22,1,.36,1); max-height: 90vh; overflow-y: auto; }
 .sheet.open { transform: translateY(0); }
 .sheet-handle { width: 36px; height: 4px; background: #E2E8F0; border-radius: 2px; margin: 12px auto 0; }
-.sheet-header { padding: 16px 20px 0; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 10px; }
+.sheet-header { padding: 16px 20px 14px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 10px; }
 .sheet-header h2 { font-size: 18px; font-weight: 800; flex: 1; }
-.sheet-close { width:32px;height:32px;border:none;background:#F1F5F9;border-radius:50%;
-  font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center; }
+.sheet-close { width: 32px; height: 32px; border: none; background: #F1F5F9; border-radius: 50%; font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
 .sheet-body { padding: 16px 20px; }
 .sheet-items { margin-bottom: 16px; }
-.sheet-item { display:flex;justify-content:space-between;align-items:center;padding:8px 0;
-  border-bottom:1px solid var(--border);font-size:14px; }
-.sheet-item:last-child { border-bottom:none; }
-.sheet-item-name { font-weight:600; }
-.sheet-item-price { color:var(--primary);font-weight:700; }
-.sheet-total { display:flex;justify-content:space-between;padding:12px 0;
-  font-size:17px;font-weight:800;border-top:2px solid var(--border);margin-bottom:16px; }
+.sheet-item { display: flex; justify-content: space-between; align-items: flex-start; padding: 10px 0; border-bottom: 1px solid var(--border); font-size: 14px; gap: 10px; }
+.sheet-item:last-child { border-bottom: none; }
+.sheet-item-name { font-weight: 600; flex: 1; }
+.sheet-item-choices { font-size: 12px; color: var(--text-sec); margin-top: 3px; line-height: 1.5; }
+.sheet-item-price { color: var(--primary); font-weight: 700; white-space: nowrap; }
+.sheet-total { display: flex; justify-content: space-between; padding: 12px 0; font-size: 17px; font-weight: 800; border-top: 2px solid var(--border); margin-bottom: 16px; }
+.sf { margin-bottom: 14px; }
+.sf label { display: block; font-size: 13px; font-weight: 600; color: var(--text-sec); margin-bottom: 6px; }
+.sf input, .sf select { width: 100%; padding: 11px 14px; border: 1.5px solid var(--border); border-radius: 10px; font-family: inherit; font-size: 16px; outline: none; transition: border-color .15s, box-shadow .15s; }
+.sf input:focus, .sf select:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(16,185,129,.15); }
+.pay-btn { width: 100%; padding: 15px; background: var(--primary); color: #fff; border: none; border-radius: 12px; font-family: inherit; font-size: 16px; font-weight: 800; cursor: pointer; transition: background .15s, transform .1s; }
+.pay-btn:active { background: var(--primary-h); transform: scale(.98); }
+.pay-btn:disabled { opacity: .5; cursor: not-allowed; transform: none; }
 
-.sf { margin-bottom:14px; }
-.sf label { display:block;font-size:13px;font-weight:600;color:var(--text-sec);margin-bottom:6px; }
-.sf input, .sf select {
-  width:100%;padding:11px 14px;border:1.5px solid var(--border);border-radius:10px;
-  font-family:inherit;font-size:16px;outline:none;
-  transition:border-color .15s, box-shadow .15s;
-}
-.sf input:focus, .sf select:focus { border-color:var(--primary); box-shadow:0 0 0 3px rgba(16,185,129,.15); }
-.pay-btn {
-  width:100%;padding:15px;background:var(--primary);color:#fff;border:none;
-  border-radius:12px;font-family:inherit;font-size:16px;font-weight:800;
-  cursor:pointer;transition:background .15s,transform .1s;
-}
-.pay-btn:active { background:var(--primary-h);transform:scale(.98); }
-.pay-btn:disabled { opacity:.5;cursor:not-allowed;transform:none; }
+/* ── Composants sheet ── */
+.comp-section { margin-bottom: 20px; }
+.comp-label { font-size: 14px; font-weight: 700; margin-bottom: 10px; display: flex; align-items: center; gap: 6px; }
+.comp-required { font-size: 11px; font-weight: 600; color: #EF4444; background: #FEE2E2; padding: 2px 7px; border-radius: 99px; }
+.comp-choices { display: flex; flex-direction: column; gap: 6px; }
+.comp-choice { display: flex; align-items: center; gap: 10px; padding: 11px 14px; border: 1.5px solid var(--border); border-radius: 10px; cursor: pointer; transition: border-color .15s, background .15s; font-size: 15px; }
+.comp-choice:hover { border-color: var(--primary); background: #F0FDF4; }
+.comp-choice input[type=radio] { width: 18px; height: 18px; accent-color: var(--primary); flex-shrink: 0; }
+.comp-choice.selected { border-color: var(--primary); background: #F0FDF4; font-weight: 600; }
+.comp-add-btn { width: 100%; padding: 14px; background: var(--primary); color: #fff; border: none; border-radius: 12px; font-family: inherit; font-size: 16px; font-weight: 800; cursor: pointer; margin-top: 4px; }
+.comp-add-btn:disabled { opacity: .4; cursor: not-allowed; }
 </style>
 </head>
 <body>
@@ -145,36 +99,37 @@ body { font-family: 'Inter', system-ui, sans-serif; background: var(--bg); color
   {% if shop.adresse %}<div class="store-addr">{{ shop.adresse }}</div>{% endif %}
 </header>
 
-<!-- Category tabs -->
 <div class="cat-tabs" id="cat-tabs">
   {% for cat in (shop.categories or []) %}
-  <button class="cat-tab{% if loop.first %} active{% endif %}"
-          onclick="scrollToCat({{ loop.index0 }})">
+  <button class="cat-tab{% if loop.first %} active{% endif %}" onclick="scrollToCat({{ loop.index0 }})">
     {{ cat.nom_categorie }}
   </button>
   {% endfor %}
 </div>
 
-<!-- Products -->
 <div id="products-root">
 {% for cat in (shop.categories or []) %}
 <div class="products" id="cat-section-{{ loop.index0 }}">
-  <div style="font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;
-              color:var(--text-sec);margin-bottom:10px;padding-top:4px;">
+  <div style="font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--text-sec);margin-bottom:10px;padding-top:4px;">
     {{ cat.nom_categorie }}
   </div>
   {% for prod in cat.produits %}
   {% if prod.prix is not none %}
-  <div class="product-card" data-id="{{ loop.index0 }}-{{ loop.index0 }}"
-       data-name="{{ prod.nom|e }}" data-price="{{ prod.prix }}"
-       data-cat="{{ loop.index0 - 1 + 1 }}" data-prod="{{ loop.index0 }}">
+  <div class="product-card"
+       data-name="{{ prod.nom|e }}"
+       data-price="{{ prod.prix }}"
+       data-composants="{{ (prod.composants or [])|tojson|e }}">
     <div class="p-info">
       <div class="p-name">{{ prod.nom }}</div>
       {% if prod.description %}<div class="p-desc">{{ prod.description }}</div>{% endif %}
       <div class="p-price">{{ '%.2f €'|format(prod.prix) }}</div>
     </div>
     <div class="p-right">
+      {% if prod.composants %}
+      <button class="add-btn has-composants" onclick="openComposants(this)">Choisir →</button>
+      {% else %}
       <button class="add-btn" onclick="addToCart(this)">+</button>
+      {% endif %}
     </div>
   </div>
   {% endif %}
@@ -190,6 +145,22 @@ body { font-family: 'Inter', system-ui, sans-serif; background: var(--bg); color
   <span class="cart-bar-total" id="cart-total-bar">0.00 €</span>
 </div>
 
+<!-- Composants selector sheet -->
+<div class="sheet-overlay" id="comp-overlay" onclick="closeComposants()"></div>
+<div class="sheet" id="comp-sheet">
+  <div class="sheet-handle"></div>
+  <div class="sheet-header">
+    <h2 id="comp-title">Personnaliser</h2>
+    <button class="sheet-close" onclick="closeComposants()">✕</button>
+  </div>
+  <div class="sheet-body">
+    <div id="comp-body"></div>
+    <button class="comp-add-btn" id="comp-add-btn" onclick="confirmComposants()" disabled>
+      Ajouter au panier
+    </button>
+  </div>
+</div>
+
 <!-- Checkout sheet -->
 <div class="sheet-overlay" id="sheet-overlay" onclick="closeSheet()"></div>
 <div class="sheet" id="checkout-sheet">
@@ -200,19 +171,9 @@ body { font-family: 'Inter', system-ui, sans-serif; background: var(--bg); color
   </div>
   <div class="sheet-body">
     <div class="sheet-items" id="sheet-items"></div>
-    <div class="sheet-total">
-      <span>Total</span>
-      <span id="sheet-total-display">0.00 €</span>
-    </div>
-
-    <div class="sf">
-      <label>Votre prénom *</label>
-      <input type="text" id="customer-name" placeholder="Ex : Marie" autocomplete="given-name">
-    </div>
-    <div class="sf">
-      <label>Téléphone *</label>
-      <input type="tel" id="customer-phone" placeholder="Ex : 06 12 34 56 78" autocomplete="tel">
-    </div>
+    <div class="sheet-total"><span>Total</span><span id="sheet-total-display">0.00 €</span></div>
+    <div class="sf"><label>Votre prénom *</label><input type="text" id="customer-name" placeholder="Ex : Marie" autocomplete="given-name"></div>
+    <div class="sf"><label>Téléphone *</label><input type="tel" id="customer-phone" placeholder="Ex : 06 12 34 56 78" autocomplete="tel"></div>
     <div class="sf">
       <label>Créneau de retrait *</label>
       <select id="slot-select">
@@ -223,47 +184,38 @@ body { font-family: 'Inter', system-ui, sans-serif; background: var(--bg); color
         {% endfor %}
       </select>
     </div>
-
-    <button class="pay-btn" id="pay-btn" onclick="startCheckout()">
-      Payer en ligne →
-    </button>
-    <p style="text-align:center;font-size:12px;color:var(--text-sec);margin-top:10px;">
-      Paiement sécurisé par Stripe
-    </p>
+    <button class="pay-btn" id="pay-btn" onclick="startCheckout()">Payer en ligne →</button>
+    <p style="text-align:center;font-size:12px;color:var(--text-sec);margin-top:10px;">Paiement sécurisé par Stripe</p>
   </div>
 </div>
 
 <script>
-const SHOP_ID   = "{{ shop_id }}";
-const STRIPE_PK = "{{ stripe_pk }}";
+const SHOP_ID = "{{ shop_id }}";
 let cart = [];
 
-// ── Cart ──
+// ── Produit standard ──
 function getCard(el) {
   const card = el.closest('.product-card');
-  return {
-    name:  card.dataset.name,
-    price: parseFloat(card.dataset.price),
-    el:    card,
-  };
+  return { name: card.dataset.name, price: parseFloat(card.dataset.price), el: card };
 }
 
-function addToCart(btn) {
-  const {name, price, el} = getCard(btn);
-  const existing = cart.find(i => i.name === name);
+function addToCart(btn, choices) {
+  const { name, price, el } = getCard(btn);
+  const key = choices ? name + JSON.stringify(choices) : name;
+  const existing = cart.find(i => i.key === key);
   if (existing) {
     existing.qty++;
   } else {
-    cart.push({ name, price, qty: 1 });
+    cart.push({ key, name, price, qty: 1, choices: choices || null });
   }
-  // Replace + button with qty control
-  const right = el.querySelector('.p-right');
-  renderCardControl(right, name, price);
+  if (!choices) {
+    renderCardControl(el.querySelector('.p-right'), btn, key);
+  }
   updateCartBar();
 }
 
-function renderCardControl(right, name, price) {
-  const item = cart.find(i => i.name === name);
+function renderCardControl(right, btn, key) {
+  const item = cart.find(i => i.key === key);
   if (!item || item.qty === 0) {
     right.innerHTML = `<button class="add-btn" onclick="addToCart(this)">+</button>`;
   } else {
@@ -277,26 +229,93 @@ function renderCardControl(right, name, price) {
 }
 
 function changeQty(btn, delta) {
-  const {name, price, el} = getCard(btn);
-  const item = cart.find(i => i.name === name);
+  const { name, price, el } = getCard(btn);
+  const item = cart.find(i => i.key === name);
   if (!item) return;
   item.qty = Math.max(0, item.qty + delta);
-  if (item.qty === 0) cart = cart.filter(i => i.name !== name);
-  renderCardControl(el.querySelector('.p-right'), name, price);
+  if (item.qty === 0) cart = cart.filter(i => i.key !== name);
+  renderCardControl(el.querySelector('.p-right'), btn, name);
   updateCartBar();
 }
 
+// ── Composants (formules) ──
+let _compBtn = null, _compData = null;
+
+function openComposants(btn) {
+  const card = btn.closest('.product-card');
+  _compBtn  = btn;
+  _compData = JSON.parse(card.dataset.composants || '[]');
+  const name = card.dataset.name;
+
+  document.getElementById('comp-title').textContent = name;
+
+  const body = document.getElementById('comp-body');
+  body.innerHTML = _compData.map((comp, ci) => `
+    <div class="comp-section">
+      <div class="comp-label">
+        ${esc(comp.label)}
+        ${comp.obligatoire ? '<span class="comp-required">Obligatoire</span>' : ''}
+      </div>
+      <div class="comp-choices">
+        ${(comp.choix || []).map((c, idx) => `
+          <label class="comp-choice" id="cc-${ci}-${idx}">
+            <input type="radio" name="comp-${ci}" value="${esc(c)}"
+                   onchange="onCompChange(${ci}, ${idx})">
+            ${esc(c)}
+          </label>`).join('')}
+      </div>
+    </div>`).join('');
+
+  document.getElementById('comp-add-btn').disabled = true;
+  document.getElementById('comp-overlay').classList.add('open');
+  document.getElementById('comp-sheet').classList.add('open');
+}
+
+function onCompChange(ci, idx) {
+  // Style selected
+  document.querySelectorAll(`[id^="cc-${ci}-"]`).forEach(el => el.classList.remove('selected'));
+  document.getElementById(`cc-${ci}-${idx}`).classList.add('selected');
+  checkCompComplete();
+}
+
+function checkCompComplete() {
+  const allMet = _compData.every((comp, ci) => {
+    if (!comp.obligatoire) return true;
+    return document.querySelector(`input[name="comp-${ci}"]:checked`) !== null;
+  });
+  document.getElementById('comp-add-btn').disabled = !allMet;
+}
+
+function confirmComposants() {
+  const choices = {};
+  _compData.forEach((comp, ci) => {
+    const checked = document.querySelector(`input[name="comp-${ci}"]:checked`);
+    if (checked) choices[comp.label] = checked.value;
+  });
+  addToCart(_compBtn, choices);
+  closeComposants();
+
+  // Flash feedback sur le bouton
+  _compBtn.textContent = '✓';
+  setTimeout(() => { _compBtn.textContent = 'Choisir →'; }, 1200);
+}
+
+function closeComposants() {
+  document.getElementById('comp-overlay').classList.remove('open');
+  document.getElementById('comp-sheet').classList.remove('open');
+}
+
+// ── Cart ──
 function cartTotal() { return cart.reduce((s, i) => s + i.price * i.qty, 0); }
 function cartCount() { return cart.reduce((s, i) => s + i.qty, 0); }
 
 function updateCartBar() {
-  const n = cartCount();
-  document.getElementById('cart-count').textContent = n;
+  document.getElementById('cart-count').textContent = cartCount();
   document.getElementById('cart-total-bar').textContent = cartTotal().toFixed(2) + ' €';
-  document.getElementById('cart-bar').classList.toggle('visible', n > 0);
+  document.getElementById('cart-bar').classList.toggle('visible', cartCount() > 0);
 }
 
-// ── Sheet ──
+// ── Checkout sheet ──
 function openSheet() {
   renderSheetItems();
   document.getElementById('sheet-overlay').classList.add('open');
@@ -308,16 +327,23 @@ function closeSheet() {
 }
 
 function renderSheetItems() {
-  const el = document.getElementById('sheet-items');
-  el.innerHTML = cart.map(i => `
-    <div class="sheet-item">
-      <span class="sheet-item-name">${i.qty}× ${esc(i.name)}</span>
-      <span class="sheet-item-price">${(i.price * i.qty).toFixed(2)} €</span>
-    </div>`).join('');
+  document.getElementById('sheet-items').innerHTML = cart.map(i => {
+    const choicesHtml = i.choices
+      ? Object.entries(i.choices).map(([k,v]) => `<div>${esc(k)} : <strong>${esc(v)}</strong></div>`).join('')
+      : '';
+    return `
+      <div class="sheet-item">
+        <div style="flex:1;">
+          <div class="sheet-item-name">${i.qty}× ${esc(i.name)}</div>
+          ${choicesHtml ? `<div class="sheet-item-choices">${choicesHtml}</div>` : ''}
+        </div>
+        <div class="sheet-item-price">${(i.price * i.qty).toFixed(2)} €</div>
+      </div>`;
+  }).join('');
   document.getElementById('sheet-total-display').textContent = cartTotal().toFixed(2) + ' €';
 }
 
-// ── Checkout ──
+// ── Paiement ──
 function startCheckout() {
   const name  = document.getElementById('customer-name').value.trim();
   const phone = document.getElementById('customer-phone').value.trim();
@@ -335,35 +361,33 @@ function startCheckout() {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
       shop_id: SHOP_ID,
-      items:   cart.map(i => ({ name: i.name, price: i.price, qty: i.qty })),
+      items: cart.map(i => ({
+        name:    i.choices
+                   ? i.name + ' (' + Object.values(i.choices).join(', ') + ')'
+                   : i.name,
+        price:   i.price,
+        qty:     i.qty,
+        choices: i.choices || null,
+      })),
       slot, customer_name: name, customer_phone: phone,
     }),
   })
     .then(r => r.json())
     .then(d => {
       if (d.checkout_url) { window.location.href = d.checkout_url; }
-      else {
-        alert('Erreur : ' + (d.error || 'Impossible de lancer le paiement.'));
-        btn.disabled = false; btn.textContent = 'Payer en ligne →';
-      }
+      else { alert('Erreur : ' + (d.error || 'Impossible de lancer le paiement.')); btn.disabled = false; btn.textContent = 'Payer en ligne →'; }
     })
-    .catch(() => {
-      alert('Erreur réseau.');
-      btn.disabled = false; btn.textContent = 'Payer en ligne →';
-    });
+    .catch(() => { alert('Erreur réseau.'); btn.disabled = false; btn.textContent = 'Payer en ligne →'; });
 }
 
-// ── Category scroll ──
+// ── Scroll catégories ──
 function scrollToCat(idx) {
-  const section = document.getElementById('cat-section-' + idx);
-  if (!section) return;
-  section.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  document.querySelectorAll('.cat-tab').forEach((t,i) => t.classList.toggle('active', i===idx));
+  document.getElementById('cat-section-' + idx)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  document.querySelectorAll('.cat-tab').forEach((t, i) => t.classList.toggle('active', i === idx));
 }
 
-// ── Utils ──
 function esc(s) {
-  return (s||'').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  return (s || '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 }
 </script>
 </body>
