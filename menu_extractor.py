@@ -6,7 +6,8 @@ Priorité : GEMINI_API_KEY → ANTHROPIC_API_KEY
 from __future__ import annotations
 import os, json, base64, re, time
 
-_PROMPT = """Analyse cette image et extrais tous les produits/articles visibles.
+_PROMPT = """Tu es un expert en extraction de cartes de restaurant et de bar.
+Analyse cette image et extrais TOUS les produits/articles visibles.
 
 Retourne exactement ce JSON (pas de ```json, juste le JSON brut) :
 {
@@ -23,22 +24,66 @@ Retourne exactement ce JSON (pas de ```json, juste le JSON brut) :
   "confiance": "haute"
 }
 
-Règles :
-- prix = nombre décimal en euros (12.50), null si invisible
-- confiance = haute / moyenne / basse selon lisibilité
-- Regroupe par catégories logiques (entrées, plats, desserts, boissons, formules…)
-- Si texte illisible → avertissement explicite dans le tableau
-- Réponds UNIQUEMENT en JSON valide, sans texte avant ni après, sans markdown
+═══ RÈGLES GÉNÉRALES ═══
 
-RÈGLE IMPORTANTE — variantes sur une même ligne :
-Si une ligne liste plusieurs variantes d'un même produit séparées par des virgules ou "/" avec un seul prix
-(ex: "Mochis chocolat, noix de coco, mangue passion .... 4€"),
-crée UN produit SÉPARÉ par variante, chacun avec le même prix.
-Exemple correct :
-  {"nom": "Mochi chocolat", "prix": 4.0, "description": null}
-  {"nom": "Mochi noix de coco", "prix": 4.0, "description": null}
-  {"nom": "Mochi mangue passion", "prix": 4.0, "description": null}
-Ne regroupe jamais plusieurs saveurs/variantes dans un seul produit.
+- prix = nombre décimal en euros (ex: 12.50). null si non indiqué ou illisible.
+- confiance = "haute" / "moyenne" / "basse" selon la lisibilité globale de la carte.
+- Regroupe par catégories logiques (entrées, plats, desserts, boissons, formules…).
+- Les points de suspension "......." et tirets "-----" entre un nom et un prix sont des séparateurs visuels : ignore-les.
+- Ne mets jamais de numéro de référence dans le nom ("12. Poulet rôti" → nom = "Poulet rôti").
+- Ne mets jamais les codes allergènes dans le nom ("Pizza (G)(L)" → nom = "Pizza", description = "Contient gluten, lactose").
+- Réponds UNIQUEMENT en JSON valide, sans texte avant ni après, sans markdown.
+
+═══ VARIANTES ET SAVEURS ═══
+
+Si une ligne liste plusieurs variantes/saveurs d'un même produit séparées par des virgules ou "/"
+avec un seul prix commun (ex: "Mochis chocolat, noix de coco, mangue passion ..... 4€"),
+crée UN produit SÉPARÉ par variante avec le même prix.
+→ {"nom": "Mochi chocolat", "prix": 4.0, "description": null}
+→ {"nom": "Mochi noix de coco", "prix": 4.0, "description": null}
+→ {"nom": "Mochi mangue passion", "prix": 4.0, "description": null}
+
+═══ TAILLES ET FORMATS ═══
+
+Si un produit existe en plusieurs tailles ou formats avec des prix différents
+(ex: "Café 2€ / 2.50€" ou "S 2€ · M 3€ · L 4€"),
+crée un produit par taille.
+→ {"nom": "Café petit", "prix": 2.0}
+→ {"nom": "Café grand", "prix": 2.5}
+
+Pour les boissons au verre / pichet / bouteille
+(ex: "Vin rouge verre 4€ · pichet 11€ · bouteille 18€"),
+crée 3 produits séparés.
+→ {"nom": "Vin rouge (verre)", "prix": 4.0}
+→ {"nom": "Vin rouge (pichet)", "prix": 11.0}
+→ {"nom": "Vin rouge (bouteille)", "prix": 18.0}
+
+═══ PRIX ═══
+
+- S'il y a un prix barré et un prix actuel, prends UNIQUEMENT le prix actuel (le plus bas ou le non-barré).
+- "à partir de 14€" → prix = 14.0, description = "à partir de 14€".
+- "de 8€ à 15€" → prix = null, description = "de 8€ à 15€".
+- Les suppléments ("+1€ fromage", "+0.50€ sauce") → crée un produit "Supplément fromage" avec prix = 1.0.
+  Ne les fusionne jamais avec le produit principal.
+
+═══ FORMULES ET MENUS ═══
+
+Une formule composée (ex: "Menu midi : entrée + plat + dessert ... 15€") = UN SEUL produit.
+→ {"nom": "Menu midi", "prix": 15.0, "description": "Entrée + plat + dessert"}
+Ne la découpe JAMAIS en produits séparés.
+
+═══ PRODUITS SPÉCIAUX ═══
+
+- "Plat du jour" sans prix → {"nom": "Plat du jour", "prix": null, "description": "Selon arrivage"}
+- Produits rayés/barrés sur la carte (épuisés) → NE PAS inclure.
+- Texte de bas de page (mentions légales, TVA, service, allergènes génériques) → ignorer complètement.
+
+═══ AVERTISSEMENTS ═══
+
+Ajoute un avertissement si :
+- Une zone de la carte est illisible ou floue
+- Un prix semble anormalement élevé (>80€ pour un plat standard)
+- Tu as dû deviner une information incertaine
 """
 
 
