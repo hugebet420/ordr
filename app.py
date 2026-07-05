@@ -85,6 +85,35 @@ def admin_required(f):
         return f(*args, **kwargs)
     return wrapped
 
+@app.route("/")
+def landing():
+    return render_template("landing.html")
+
+@app.route("/api/contact", methods=["POST"])
+def api_contact():
+    data     = request.get_json() or {}
+    name     = data.get("name", "")
+    phone    = data.get("phone", "")
+    commerce = data.get("commerce", "")
+    ctype    = data.get("type", "")
+    host = os.environ.get("SMTP_HOST")
+    port = int(os.environ.get("SMTP_PORT", 587))
+    user = os.environ.get("SMTP_USER")
+    pwd  = os.environ.get("SMTP_PASS")
+    dest = os.environ.get("NOTIFY_EMAIL") or user
+    if all([host, user, pwd, dest]):
+        try:
+            body = f"Nouveau lead ORDR\n\nNom : {name}\nTél : {phone}\nCommerce : {commerce}\nType : {ctype}"
+            msg = MIMEText(body, "plain", "utf-8")
+            msg["Subject"] = f"[ORDR] Nouveau lead : {commerce}"
+            msg["From"] = user
+            msg["To"]   = dest
+            with smtplib.SMTP(host, port, timeout=10) as s:
+                s.starttls(); s.login(user, pwd); s.send_message(msg)
+        except Exception:
+            pass
+    return jsonify({"success": True})
+
 @app.route("/admin/login", methods=["GET", "POST"])
 def admin_login():
     error = None
