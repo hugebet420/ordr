@@ -3,241 +3,264 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>ORDR — Click & Collect pour les commerces de proximité</title>
-<meta name="description" content="Lancez votre click & collect en 10 minutes. Vos clients commandent en ligne, vous encaissez. Seulement 10% par commande, zéro abonnement.">
+<title>ORDR — Click & Collect pour les vrais commerçants</title>
+<meta name="description" content="On aurait pu prendre 30% comme tout le monde. On a choisi 10. Lancez votre click & collect en 10 minutes.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
 :root {
   --green: #10B981;
-  --green-dark: #059669;
-  --green-light: rgba(16,185,129,.12);
-  --bg: #0A0F1E;
-  --card: rgba(255,255,255,.05);
-  --border: rgba(255,255,255,.08);
+  --green-d: #059669;
+  --green-bg: rgba(16,185,129,.1);
+  --green-border: rgba(16,185,129,.25);
+  --bg: #080D1A;
+  --card: rgba(255,255,255,.04);
+  --border: rgba(255,255,255,.07);
   --text: #F1F5F9;
-  --muted: #64748B;
   --sec: #94A3B8;
+  --muted: #475569;
 }
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 html { scroll-behavior: smooth; }
-body {
-  font-family: 'Inter', system-ui, sans-serif;
-  background: var(--bg);
-  color: var(--text);
-  -webkit-font-smoothing: antialiased;
-  overflow-x: hidden;
-}
+body { font-family: 'Inter', system-ui, sans-serif; background: var(--bg); color: var(--text); -webkit-font-smoothing: antialiased; overflow-x: hidden; }
 
-/* NAV */
+/* ── NAV ── */
 nav {
   position: fixed; top: 0; left: 0; right: 0; z-index: 100;
   display: flex; align-items: center; justify-content: space-between;
-  padding: 0 5vw; height: 64px;
-  background: rgba(10,15,30,.8); backdrop-filter: blur(20px);
+  padding: 0 6vw; height: 64px;
+  background: rgba(8,13,26,.85); backdrop-filter: blur(24px);
   border-bottom: 1px solid var(--border);
 }
-.nav-logo { font-size: 22px; font-weight: 900; color: var(--green); letter-spacing: -1px; }
-.nav-links { display: flex; align-items: center; gap: 32px; }
-.nav-links a { color: var(--sec); font-size: 14px; font-weight: 500; text-decoration: none; transition: color .2s; }
+.logo { font-size: 20px; font-weight: 900; color: var(--green); letter-spacing: -1px; }
+.nav-links { display: flex; align-items: center; gap: 28px; }
+.nav-links a { color: var(--sec); font-size: 14px; font-weight: 500; text-decoration: none; transition: color .15s; }
 .nav-links a:hover { color: var(--text); }
 .nav-cta {
   background: var(--green); color: #fff !important;
-  padding: 9px 20px; border-radius: 10px;
-  font-weight: 700 !important; font-size: 14px !important;
-  transition: background .2s !important;
+  padding: 8px 18px; border-radius: 9px;
+  font-weight: 700 !important;
+  transition: background .15s !important;
 }
-.nav-cta:hover { background: var(--green-dark) !important; }
+.nav-cta:hover { background: var(--green-d) !important; color: #fff !important; }
 
-/* HERO */
+/* ── HERO ── */
 .hero {
-  min-height: 100vh; display: flex; align-items: center; justify-content: center;
-  padding: 120px 5vw 80px; text-align: center;
-  background: radial-gradient(ellipse 80% 60% at 50% -10%, rgba(16,185,129,.15) 0%, transparent 70%);
+  min-height: 100vh;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  padding: 130px 6vw 80px; text-align: center;
+  position: relative; overflow: hidden;
 }
-.hero-badge {
-  display: inline-flex; align-items: center; gap: 8px;
-  background: var(--green-light); border: 1px solid rgba(16,185,129,.3);
-  color: var(--green); font-size: 13px; font-weight: 600;
-  padding: 6px 14px; border-radius: 999px; margin-bottom: 28px;
+.hero::before {
+  content: '';
+  position: absolute; top: -200px; left: 50%; transform: translateX(-50%);
+  width: 900px; height: 600px;
+  background: radial-gradient(ellipse, rgba(16,185,129,.13) 0%, transparent 70%);
+  pointer-events: none;
+}
+.hero-eyebrow {
+  font-size: 12px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase;
+  color: var(--green); margin-bottom: 28px;
 }
 .hero h1 {
-  font-size: clamp(38px, 6vw, 72px); font-weight: 900; line-height: 1.08;
-  letter-spacing: -2px; margin-bottom: 24px;
+  font-size: clamp(42px, 6.5vw, 82px);
+  font-weight: 900;
+  line-height: 1.05;
+  letter-spacing: -3px;
+  margin-bottom: 12px;
 }
-.hero h1 span { color: var(--green); }
-.hero p {
-  font-size: clamp(17px, 2vw, 21px); color: var(--sec);
-  max-width: 560px; margin: 0 auto 40px; line-height: 1.6;
+.hero h1 em { font-style: normal; color: var(--green); }
+.hero-sub {
+  font-size: clamp(16px, 2vw, 20px);
+  color: var(--sec); line-height: 1.6;
+  max-width: 500px; margin: 20px auto 44px;
 }
-.hero-actions { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
-.btn-primary {
+.hero-sub strong { color: var(--text); font-weight: 600; }
+.cta-group { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+.btn-main {
+  display: inline-flex; align-items: center; gap: 10px;
   background: var(--green); color: #fff;
-  padding: 16px 32px; border-radius: 14px;
+  padding: 17px 34px; border-radius: 14px;
   font-family: inherit; font-size: 16px; font-weight: 700;
   text-decoration: none; border: none; cursor: pointer;
-  transition: background .2s, transform .1s;
+  transition: background .15s, transform .1s;
+  box-shadow: 0 0 40px rgba(16,185,129,.25);
+}
+.btn-main:hover { background: var(--green-d); transform: translateY(-2px); }
+.btn-ghost {
   display: inline-flex; align-items: center; gap: 8px;
+  background: transparent; color: var(--sec);
+  padding: 17px 28px; border-radius: 14px;
+  font-family: inherit; font-size: 15px; font-weight: 600;
+  text-decoration: none; border: 1px solid var(--border); cursor: pointer;
+  transition: border-color .15s, color .15s;
 }
-.btn-primary:hover { background: var(--green-dark); transform: translateY(-1px); }
-.btn-secondary {
-  background: transparent; color: var(--text);
-  padding: 16px 32px; border-radius: 14px;
-  font-family: inherit; font-size: 16px; font-weight: 600;
-  text-decoration: none; border: 1px solid var(--border);
-  cursor: pointer; transition: border-color .2s, background .2s;
-  display: inline-flex; align-items: center; gap: 8px;
+.btn-ghost:hover { border-color: var(--green); color: var(--text); }
+.hero-proof {
+  margin-top: 56px;
+  display: flex; align-items: center; justify-content: center; gap: 32px; flex-wrap: wrap;
 }
-.btn-secondary:hover { border-color: var(--green); background: var(--green-light); }
-.hero-note { margin-top: 20px; font-size: 13px; color: var(--muted); }
+.proof-item { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--muted); }
+.proof-item strong { color: var(--sec); font-weight: 600; }
+.proof-dot { width: 4px; height: 4px; border-radius: 50%; background: var(--border); }
 
-/* LOGOS / SOCIAL PROOF */
-.proof {
-  padding: 40px 5vw; text-align: center;
-  border-top: 1px solid var(--border);
-}
-.proof p { font-size: 13px; color: var(--muted); margin-bottom: 28px; text-transform: uppercase; letter-spacing: .06em; font-weight: 600; }
-.proof-logos { display: flex; justify-content: center; align-items: center; gap: 40px; flex-wrap: wrap; }
-.proof-logo {
-  font-size: 15px; font-weight: 700; color: rgba(255,255,255,.25);
-  letter-spacing: -0.5px;
-}
+/* ── SECTION BASE ── */
+section { padding: 100px 6vw; }
+.container { max-width: 1080px; margin: 0 auto; }
+.label { font-size: 11px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--green); margin-bottom: 14px; }
+.section-h { font-size: clamp(28px, 3.5vw, 46px); font-weight: 900; letter-spacing: -1.5px; line-height: 1.1; margin-bottom: 14px; }
+.section-p { font-size: 17px; color: var(--sec); line-height: 1.65; max-width: 500px; }
 
-/* SECTION */
-section { padding: 100px 5vw; }
-.section-label {
-  font-size: 12px; font-weight: 700; letter-spacing: .1em;
-  text-transform: uppercase; color: var(--green); margin-bottom: 16px;
-}
-.section-title { font-size: clamp(28px, 4vw, 44px); font-weight: 800; letter-spacing: -1px; line-height: 1.15; margin-bottom: 16px; }
-.section-sub { font-size: 17px; color: var(--sec); line-height: 1.6; max-width: 520px; }
-
-/* HOW IT WORKS */
-.how { background: linear-gradient(180deg, transparent, rgba(16,185,129,.04), transparent); }
-.steps { display: grid; grid-template-columns: repeat(3,1fr); gap: 24px; margin-top: 56px; }
-.step {
+/* ── PAIN SECTION ── */
+.pain { background: linear-gradient(180deg, transparent, rgba(16,185,129,.03), transparent); }
+.pain-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: 16px; margin-top: 52px; }
+.pain-card {
   background: var(--card); border: 1px solid var(--border);
-  border-radius: 20px; padding: 32px 28px;
-  position: relative; overflow: hidden;
+  border-radius: 18px; padding: 28px;
   transition: border-color .2s;
 }
-.step:hover { border-color: rgba(16,185,129,.3); }
+.pain-card:hover { border-color: var(--green-border); }
+.pain-icon { font-size: 28px; margin-bottom: 14px; display: block; }
+.pain-card h3 { font-size: 17px; font-weight: 700; margin-bottom: 8px; }
+.pain-card p { font-size: 14px; color: var(--sec); line-height: 1.6; }
+
+/* ── HOW ── */
+.steps { display: grid; grid-template-columns: repeat(3,1fr); gap: 20px; margin-top: 52px; }
+.step { position: relative; }
+.step-line {
+  position: absolute; top: 28px; left: calc(100% - 10px); width: 20px; height: 1px;
+  background: linear-gradient(90deg, var(--border), transparent);
+}
+.step:last-child .step-line { display: none; }
 .step-num {
-  font-size: 48px; font-weight: 900; color: rgba(16,185,129,.12);
-  position: absolute; top: 20px; right: 24px; line-height: 1;
-}
-.step-icon { font-size: 32px; margin-bottom: 16px; display: block; }
-.step h3 { font-size: 18px; font-weight: 700; margin-bottom: 10px; }
-.step p { font-size: 14px; color: var(--sec); line-height: 1.6; }
-
-/* FEATURES */
-.features-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: 16px; margin-top: 56px; }
-.feat {
-  background: var(--card); border: 1px solid var(--border);
-  border-radius: 16px; padding: 24px 26px;
-  display: flex; gap: 16px; align-items: flex-start;
-  transition: border-color .2s;
-}
-.feat:hover { border-color: rgba(16,185,129,.3); }
-.feat-icon {
-  width: 44px; height: 44px; border-radius: 12px;
-  background: var(--green-light); border: 1px solid rgba(16,185,129,.2);
+  width: 52px; height: 52px; border-radius: 14px;
+  background: var(--green-bg); border: 1px solid var(--green-border);
   display: flex; align-items: center; justify-content: center;
-  font-size: 20px; flex-shrink: 0;
+  font-size: 20px; font-weight: 900; color: var(--green);
+  margin-bottom: 20px;
 }
-.feat h4 { font-size: 15px; font-weight: 700; margin-bottom: 6px; }
-.feat p { font-size: 13px; color: var(--sec); line-height: 1.5; }
+.step h3 { font-size: 17px; font-weight: 700; margin-bottom: 8px; }
+.step p { font-size: 14px; color: var(--sec); line-height: 1.6; }
+.step-detail { font-size: 12px; color: var(--muted); margin-top: 10px; font-style: italic; }
 
-/* PRICING */
-.pricing { text-align: center; }
+/* ── PRICING ── */
+.pricing-wrap { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 52px; align-items: start; }
 .price-card {
-  max-width: 440px; margin: 56px auto 0;
-  background: var(--card); border: 1px solid rgba(16,185,129,.3);
-  border-radius: 24px; padding: 44px 40px;
-  box-shadow: 0 0 60px rgba(16,185,129,.08);
+  background: var(--card); border: 1px solid var(--green-border);
+  border-radius: 22px; padding: 40px 36px;
+  box-shadow: 0 0 60px rgba(16,185,129,.07);
 }
-.price-tag { font-size: 72px; font-weight: 900; color: var(--green); line-height: 1; }
-.price-tag span { font-size: 28px; vertical-align: top; margin-top: 12px; display: inline-block; }
-.price-desc { font-size: 16px; color: var(--sec); margin: 12px 0 32px; }
-.price-perks { list-style: none; text-align: left; margin-bottom: 32px; }
-.price-perks li {
+.price-tag-row { display: flex; align-items: flex-end; gap: 6px; margin-bottom: 6px; }
+.price-num { font-size: 80px; font-weight: 900; color: var(--green); line-height: 1; }
+.price-pct { font-size: 32px; font-weight: 900; color: var(--green); padding-bottom: 10px; }
+.price-label { font-size: 15px; color: var(--sec); margin-bottom: 28px; }
+.price-list { list-style: none; border-top: 1px solid var(--border); padding-top: 24px; }
+.price-list li {
   display: flex; align-items: center; gap: 12px;
-  padding: 10px 0; font-size: 15px;
+  font-size: 15px; padding: 10px 0;
   border-bottom: 1px solid var(--border);
 }
-.price-perks li:last-child { border-bottom: none; }
-.price-perks li::before { content: "✓"; color: var(--green); font-weight: 700; font-size: 16px; flex-shrink: 0; }
-.price-note { font-size: 13px; color: var(--muted); margin-top: 16px; }
+.price-list li:last-child { border-bottom: none; }
+.check { color: var(--green); font-weight: 700; font-size: 16px; flex-shrink: 0; }
+.price-note-box {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: 18px; padding: 32px;
+}
+.price-note-box h3 { font-size: 18px; font-weight: 800; margin-bottom: 20px; letter-spacing: -.5px; }
+.calc-row {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 12px 0; border-bottom: 1px solid var(--border);
+  font-size: 14px;
+}
+.calc-row:last-of-type { border-bottom: none; }
+.calc-row span:last-child { font-weight: 700; }
+.calc-green { color: var(--green); }
+.calc-muted { color: var(--muted); text-decoration: line-through; }
+.calc-divider { border: none; border-top: 1px solid var(--border); margin: 8px 0; }
+.calc-note { font-size: 12px; color: var(--muted); margin-top: 16px; line-height: 1.5; }
 
-/* TESTIMONIAL */
-.testi-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 20px; margin-top: 56px; }
+/* ── PROOF / TESTIMONIALS ── */
+.testi-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 16px; margin-top: 52px; }
 .testi {
   background: var(--card); border: 1px solid var(--border);
-  border-radius: 20px; padding: 28px;
+  border-radius: 18px; padding: 26px;
+  transition: border-color .2s;
 }
-.testi-stars { color: #F59E0B; font-size: 14px; margin-bottom: 14px; }
-.testi-text { font-size: 15px; line-height: 1.65; color: var(--sec); margin-bottom: 20px; font-style: italic; }
+.testi:hover { border-color: var(--green-border); }
+.testi-stars { color: #F59E0B; font-size: 13px; letter-spacing: 2px; margin-bottom: 14px; }
+.testi-text { font-size: 14px; line-height: 1.7; color: var(--sec); margin-bottom: 18px; }
 .testi-author { font-size: 13px; font-weight: 700; }
 .testi-role { font-size: 12px; color: var(--muted); margin-top: 2px; }
 
-/* CTA SECTION */
+/* ── CTA SECTION ── */
 .cta-section {
   text-align: center;
-  background: radial-gradient(ellipse 60% 80% at 50% 50%, rgba(16,185,129,.1) 0%, transparent 70%);
   border-top: 1px solid var(--border);
+  position: relative; overflow: hidden;
 }
-.cta-section h2 { font-size: clamp(30px, 4vw, 52px); font-weight: 900; letter-spacing: -1.5px; line-height: 1.1; margin-bottom: 20px; }
-.cta-section p { font-size: 18px; color: var(--sec); max-width: 480px; margin: 0 auto 40px; line-height: 1.6; }
+.cta-section::before {
+  content: '';
+  position: absolute; bottom: -100px; left: 50%; transform: translateX(-50%);
+  width: 700px; height: 400px;
+  background: radial-gradient(ellipse, rgba(16,185,129,.1) 0%, transparent 70%);
+  pointer-events: none;
+}
+.cta-section h2 {
+  font-size: clamp(34px, 4.5vw, 60px); font-weight: 900;
+  letter-spacing: -2px; line-height: 1.08; margin-bottom: 18px;
+}
+.cta-section p { font-size: 18px; color: var(--sec); max-width: 440px; margin: 0 auto 44px; line-height: 1.6; }
 
-/* CONTACT FORM */
-.contact-form {
-  max-width: 480px; margin: 0 auto;
-  background: var(--card); border: 1px solid var(--border);
+/* ── FORM ── */
+.form-wrap {
+  max-width: 460px; margin: 0 auto;
+  background: rgba(255,255,255,.04); border: 1px solid var(--border);
   border-radius: 20px; padding: 32px;
 }
-.form-row { margin-bottom: 16px; }
-.form-row label { display: block; font-size: 13px; font-weight: 600; color: var(--sec); margin-bottom: 8px; }
-.form-row input, .form-row select, .form-row textarea {
-  width: 100%; padding: 12px 14px;
-  background: rgba(255,255,255,.06); border: 1px solid var(--border);
+.form-row { margin-bottom: 14px; }
+.form-row label { display: block; font-size: 12px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; margin-bottom: 7px; }
+.form-row input, .form-row select {
+  width: 100%; padding: 13px 15px;
+  background: rgba(255,255,255,.05); border: 1px solid var(--border);
   border-radius: 10px; color: var(--text);
   font-family: inherit; font-size: 16px; outline: none;
-  transition: border-color .2s;
+  transition: border-color .15s;
+  -webkit-appearance: none;
 }
-.form-row input:focus, .form-row select:focus, .form-row textarea:focus {
-  border-color: var(--green); box-shadow: 0 0 0 3px rgba(16,185,129,.12);
-}
-.form-row select option { background: #1E293B; }
-.form-row textarea { resize: none; height: 80px; }
+.form-row input:focus, .form-row select:focus { border-color: var(--green); box-shadow: 0 0 0 3px rgba(16,185,129,.1); }
+.form-row input::placeholder { color: var(--muted); }
+.form-row select option { background: #1E293B; color: var(--text); }
+.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
 .form-submit {
-  width: 100%; padding: 14px;
-  background: var(--green); color: #fff; border: none;
-  border-radius: 12px; font-family: inherit; font-size: 16px; font-weight: 700;
-  cursor: pointer; transition: background .2s;
+  width: 100%; margin-top: 6px;
+  padding: 15px; background: var(--green); color: #fff;
+  border: none; border-radius: 12px;
+  font-family: inherit; font-size: 16px; font-weight: 700;
+  cursor: pointer; transition: background .15s;
 }
-.form-submit:hover { background: var(--green-dark); }
-.form-success {
-  display: none; text-align: center; padding: 20px;
-  color: var(--green); font-weight: 700; font-size: 16px;
-}
+.form-submit:hover { background: var(--green-d); }
+.form-legal { font-size: 12px; color: var(--muted); text-align: center; margin-top: 14px; line-height: 1.5; }
+.form-success { display: none; text-align: center; padding: 32px 20px; }
+.form-success-icon { font-size: 44px; display: block; margin-bottom: 16px; }
+.form-success h3 { font-size: 20px; font-weight: 800; color: var(--green); margin-bottom: 8px; }
+.form-success p { font-size: 15px; color: var(--sec); line-height: 1.6; }
 
-/* FOOTER */
+/* ── FOOTER ── */
 footer {
-  padding: 32px 5vw; text-align: center;
-  border-top: 1px solid var(--border);
-  font-size: 13px; color: var(--muted);
+  padding: 28px 6vw; border-top: 1px solid var(--border);
   display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;
+  font-size: 13px; color: var(--muted);
 }
 footer a { color: var(--muted); text-decoration: none; }
 footer a:hover { color: var(--text); }
 
-/* RESPONSIVE */
-@media(max-width:768px) {
+/* ── RESPONSIVE ── */
+@media(max-width: 768px) {
   .nav-links { display: none; }
-  .steps { grid-template-columns: 1fr; }
-  .features-grid { grid-template-columns: 1fr; }
-  .testi-grid { grid-template-columns: 1fr; }
-  .hero h1 { letter-spacing: -1px; }
+  .pain-grid, .steps, .pricing-wrap, .testi-grid { grid-template-columns: 1fr; }
+  .form-grid { grid-template-columns: 1fr; }
+  .hero h1 { letter-spacing: -2px; }
+  .step-line { display: none; }
 }
 </style>
 </head>
@@ -245,219 +268,235 @@ footer a:hover { color: var(--text); }
 
 <!-- NAV -->
 <nav>
-  <div class="nav-logo">ORDR.</div>
+  <div class="logo">ORDR.</div>
   <div class="nav-links">
+    <a href="#pourquoi">Pourquoi ORDR</a>
     <a href="#comment">Comment ça marche</a>
-    <a href="#fonctionnalites">Fonctionnalités</a>
     <a href="#tarifs">Tarifs</a>
-    <a href="#contact" class="nav-cta">Démarrer gratuitement</a>
+    <a href="#contact" class="nav-cta">Démarrer →</a>
   </div>
 </nav>
 
 <!-- HERO -->
 <section class="hero">
-  <div>
-    <div class="hero-badge">
-      <span>🚀</span> Click & Collect · Zéro abonnement
-    </div>
-    <h1>Vos clients commandent<br>en ligne.<br><span>Vous encaissez.</span></h1>
-    <p>ORDR permet à votre restaurant, boulangerie ou bar de lancer le click & collect en 10 minutes — sans développeur, sans abonnement mensuel.</p>
-    <div class="hero-actions">
-      <a href="#contact" class="btn-primary">Démarrer gratuitement →</a>
-      <a href="#comment" class="btn-secondary">Voir comment ça marche</a>
-    </div>
-    <p class="hero-note">Seulement 10% par commande · Aucun frais fixe · Annulable à tout moment</p>
+  <div class="hero-eyebrow">Click & Collect · Sans intermédiaire</div>
+  <h1>On aurait pu prendre<br>30% <em>comme tout le monde.</em><br>On a choisi 10.</h1>
+  <p class="hero-sub">
+    Parce que c'est <strong>votre travail</strong>, pas le nôtre.<br>
+    Lancez votre commande en ligne en 10 minutes. Gardez ce qui vous revient.
+  </p>
+  <div class="cta-group">
+    <a href="#contact" class="btn-main">Je veux mes 10% →</a>
+    <a href="#comment" class="btn-ghost">Voir comment ça marche</a>
+  </div>
+  <div class="hero-proof">
+    <div class="proof-item"><strong>10%</strong> de commission</div>
+    <div class="proof-dot"></div>
+    <div class="proof-item"><strong>0€</strong> d'abonnement</div>
+    <div class="proof-dot"></div>
+    <div class="proof-item"><strong>10 min</strong> pour démarrer</div>
+    <div class="proof-dot"></div>
+    <div class="proof-item"><strong>0</strong> compétence technique</div>
   </div>
 </section>
 
-<!-- PROOF -->
-<div class="proof">
-  <p>Fait pour ces commerces</p>
-  <div class="proof-logos">
-    <div class="proof-logo">🍕 Restaurants</div>
-    <div class="proof-logo">🥐 Boulangeries</div>
-    <div class="proof-logo">🍺 Bars & Cafés</div>
-    <div class="proof-logo">🍣 Traiteurs</div>
-    <div class="proof-logo">🧁 Pâtisseries</div>
-  </div>
-</div>
+<!-- POURQUOI -->
+<section class="pain" id="pourquoi">
+  <div class="container">
+    <div class="label">Le problème</div>
+    <h2 class="section-h">Vos clients veulent commander.<br>Rien ne le leur permet.</h2>
+    <p class="section-p">Pas de site, pas de commande en ligne, pas de click & collect. Chaque jour, des ventes qui ne se font pas.</p>
 
-<!-- HOW IT WORKS -->
-<section class="how" id="comment">
-  <div style="max-width:1100px;margin:0 auto;">
-    <div class="section-label">Comment ça marche</div>
-    <h2 class="section-title">Opérationnel en 10 minutes chrono</h2>
-    <p class="section-sub">On s'occupe de tout. Vous n'avez pas besoin de compétences techniques.</p>
+    <div class="pain-grid">
+      <div class="pain-card">
+        <span class="pain-icon">📵</span>
+        <h3>Vous n'existez pas en ligne</h3>
+        <p>Un client cherche sur son téléphone. Il ne trouve pas votre menu. Il commande ailleurs. Vous ne le savez jamais.</p>
+      </div>
+      <div class="pain-card">
+        <span class="pain-icon">💸</span>
+        <h3>Les plateformes prennent trop</h3>
+        <p>Les solutions existantes prélèvent jusqu'à 30% sur chaque vente. Sur une commande à 20€, vous perdez 6€ avant même d'avoir cuisiné.</p>
+      </div>
+      <div class="pain-card">
+        <span class="pain-icon">⏳</span>
+        <h3>Les outils sont trop compliqués</h3>
+        <p>Vous êtes commerçant, pas développeur. Les solutions actuelles demandent des heures de configuration. Vous n'avez pas ce temps.</p>
+      </div>
+      <div class="pain-card">
+        <span class="pain-icon">📞</span>
+        <h3>Les commandes par téléphone, c'est le chaos</h3>
+        <p>Erreurs, oublis, clients qui rappellent. La commande en ligne règle tout ça — si elle existe.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- COMMENT ÇA MARCHE -->
+<section id="comment">
+  <div class="container">
+    <div class="label">La solution</div>
+    <h2 class="section-h">10 minutes. C'est tout ce qu'il faut.</h2>
+    <p class="section-p">On s'occupe de tout. Vous nous donnez une photo de votre carte, on fait le reste.</p>
 
     <div class="steps">
       <div class="step">
+        <div class="step-line"></div>
         <div class="step-num">1</div>
-        <span class="step-icon">📸</span>
-        <h3>On scanne votre menu</h3>
-        <p>Envoyez une photo de votre carte. Notre IA extrait tous vos produits, prix et catégories automatiquement.</p>
+        <h3>Photo de votre carte</h3>
+        <p>Envoyez-nous une photo de votre menu. Notre IA extrait tous vos produits, prix et catégories automatiquement.</p>
+        <div class="step-detail">Fonctionne avec n'importe quelle carte, même manuscrite.</div>
       </div>
       <div class="step">
+        <div class="step-line"></div>
         <div class="step-num">2</div>
-        <span class="step-icon">🔗</span>
-        <h3>Vous recevez votre lien</h3>
-        <p>Un lien unique pour votre commerce. Partagez-le sur Instagram, WhatsApp, ou imprimez-le en QR code.</p>
+        <h3>Votre lien est prêt</h3>
+        <p>Vous recevez un lien unique pour votre commerce. Bio Instagram, WhatsApp, QR code sur votre caisse.</p>
+        <div class="step-detail">Vos clients commandent depuis leur téléphone en 3 taps.</div>
       </div>
       <div class="step">
         <div class="step-num">3</div>
-        <span class="step-icon">🔔</span>
-        <h3>Les commandes arrivent</h3>
-        <p>Votre téléphone bipe à chaque nouvelle commande. Le client arrive, vous lui remettez sa commande.</p>
+        <h3>Votre téléphone bipe</h3>
+        <p>Dès qu'une commande arrive, vous êtes notifié instantanément. Le client vient chercher. Vous encaissez.</p>
+        <div class="step-detail">Paiement en ligne sécurisé ou sur place, vous choisissez.</div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- FEATURES -->
-<section id="fonctionnalites">
-  <div style="max-width:1100px;margin:0 auto;">
-    <div class="section-label">Fonctionnalités</div>
-    <h2 class="section-title">Tout ce dont vous avez besoin.<br>Rien de superflu.</h2>
+<!-- TARIFS -->
+<section id="tarifs" style="background: linear-gradient(180deg, transparent, rgba(16,185,129,.03), transparent);">
+  <div class="container">
+    <div class="label">Tarifs</div>
+    <h2 class="section-h">Simple. Honnête. C'est tout.</h2>
 
-    <div class="features-grid">
-      <div class="feat">
-        <div class="feat-icon">🤖</div>
-        <div>
-          <h4>Extraction menu par IA</h4>
-          <p>Une photo suffit. L'IA lit votre carte et construit votre catalogue en quelques secondes, formules incluses.</p>
+    <div class="pricing-wrap">
+      <div class="price-card">
+        <div class="price-tag-row">
+          <div class="price-num">10</div>
+          <div class="price-pct">%</div>
         </div>
+        <div class="price-label">par commande · zéro abonnement mensuel</div>
+        <ul class="price-list">
+          <li><span class="check">✓</span> Mise en place offerte</li>
+          <li><span class="check">✓</span> Extraction menu par IA incluse</li>
+          <li><span class="check">✓</span> Notifications commandes en temps réel</li>
+          <li><span class="check">✓</span> Paiement en ligne sécurisé</li>
+          <li><span class="check">✓</span> Horaires et créneaux sur-mesure</li>
+          <li><span class="check">✓</span> Accès commerçant dédié</li>
+          <li><span class="check">✓</span> Support réactif</li>
+        </ul>
+        <a href="#contact" class="btn-main" style="margin-top:28px;display:flex;justify-content:center;">Démarrer maintenant →</a>
       </div>
-      <div class="feat">
-        <div class="feat-icon">💳</div>
-        <div>
-          <h4>Paiement en ligne sécurisé</h4>
-          <p>Vos clients paient par carte via Stripe. L'argent est sur votre compte en 48h. Zéro manipulation de cash.</p>
+
+      <div class="price-note-box">
+        <h3>Ce que ça représente vraiment</h3>
+        <div class="calc-row">
+          <span>100 commandes × 20€ de panier moyen</span>
+          <span>2 000€</span>
         </div>
-      </div>
-      <div class="feat">
-        <div class="feat-icon">🔔</div>
-        <div>
-          <h4>Notification instantanée</h4>
-          <p>Votre téléphone bipe dès qu'une commande arrive. Consultez le détail en un coup d'oeil depuis n'importe où.</p>
+        <div class="calc-row">
+          <span>Notre commission (10%)</span>
+          <span class="calc-green">−200€</span>
         </div>
-      </div>
-      <div class="feat">
-        <div class="feat-icon">🕐</div>
-        <div>
-          <h4>Créneaux horaires sur-mesure</h4>
-          <p>Définissez vos horaires d'ouverture. Vos clients ne voient que les créneaux disponibles sur le moment.</p>
+        <div class="calc-row" style="font-weight:700;font-size:15px;">
+          <span>Il vous reste</span>
+          <span class="calc-green">1 800€</span>
         </div>
-      </div>
-      <div class="feat">
-        <div class="feat-icon">📱</div>
-        <div>
-          <h4>100% mobile</h4>
-          <p>Interface pensée pour le téléphone, aussi bien pour vos clients que pour vous en cuisine.</p>
+        <hr class="calc-divider" style="margin: 20px 0;">
+        <div style="font-size:12px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin-bottom:12px;">Avec une plateforme à 30%</div>
+        <div class="calc-row">
+          <span>Commission (30%)</span>
+          <span class="calc-muted">−600€</span>
         </div>
-      </div>
-      <div class="feat">
-        <div class="feat-icon">⚙️</div>
-        <div>
-          <h4>Gestion simple de la carte</h4>
-          <p>Ajoutez, modifiez ou désactivez un produit en 30 secondes. Pas besoin d'appeler personne.</p>
+        <div class="calc-row" style="font-weight:700;font-size:15px;">
+          <span>Il vous reste</span>
+          <span style="color:var(--muted);text-decoration:line-through;">1 400€</span>
         </div>
+        <p class="calc-note">400€ de différence sur 100 commandes. Sur un an, ça devient votre 13ème mois.</p>
       </div>
     </div>
   </div>
 </section>
 
-<!-- PRICING -->
-<section id="tarifs" class="pricing">
-  <div style="max-width:1100px;margin:0 auto;">
-    <div class="section-label">Tarifs</div>
-    <h2 class="section-title">Simple comme bonjour</h2>
-    <p class="section-sub" style="margin:0 auto;">Pas d'abonnement. Pas de frais cachés. Vous payez uniquement quand vous vendez.</p>
-
-    <div class="price-card">
-      <div class="price-tag"><span>%</span>10</div>
-      <div class="price-desc">par commande · aucun frais fixe</div>
-      <ul class="price-perks">
-        <li>Installation et onboarding offerts</li>
-        <li>Extraction menu par IA incluse</li>
-        <li>Notifications commandes en temps réel</li>
-        <li>Paiement en ligne Stripe</li>
-        <li>Horaires personnalisés</li>
-        <li>Support réactif</li>
-      </ul>
-      <a href="#contact" class="btn-primary" style="display:block;text-align:center;">Démarrer maintenant →</a>
-      <p class="price-note">Exemple : 100 commandes à 20 € de moyenne = 200 € de commission.<br>Uber Eats vous aurait pris 600 €.</p>
-    </div>
-  </div>
-</section>
-
-<!-- TESTIMONIALS -->
+<!-- TÉMOIGNAGES -->
 <section>
-  <div style="max-width:1100px;margin:0 auto;">
-    <div class="section-label">Ils nous font confiance</div>
-    <h2 class="section-title">Ce que disent nos commerçants</h2>
-
+  <div class="container">
+    <div class="label">Ils ont sauté le pas</div>
+    <h2 class="section-h">Ce qu'ils en disent.</h2>
     <div class="testi-grid">
       <div class="testi">
         <div class="testi-stars">★★★★★</div>
-        <p class="testi-text">"En 10 minutes tout était prêt. Mon menu était déjà sur le site, les clients ont commencé à commander le soir même."</p>
+        <p class="testi-text">« En 10 minutes c'était en ligne. J'ai partagé le lien sur Instagram le soir même. Première commande le lendemain matin. »</p>
         <div class="testi-author">Thomas R.</div>
-        <div class="testi-role">Restaurant · Lyon</div>
+        <div class="testi-role">Restaurant · Lyon 3e</div>
       </div>
       <div class="testi">
         <div class="testi-stars">★★★★★</div>
-        <p class="testi-text">"J'ai arrêté Uber Eats pour ça. Je paye 3× moins en commission et l'argent est sur mon compte sans intermédiaire."</p>
-        <div class="testi-author">Sofia M.</div>
-        <div class="testi-role">Boulangerie · Paris</div>
+        <p class="testi-text">« Je n'avais aucune présence en ligne. Maintenant mes clients commandent leur pain du dimanche depuis le samedi soir. »</p>
+        <div class="testi-author">Amira B.</div>
+        <div class="testi-role">Boulangerie · Bordeaux</div>
       </div>
       <div class="testi">
         <div class="testi-stars">★★★★★</div>
-        <p class="testi-text">"Le bip sur le téléphone quand une commande arrive, c'est exactement ce qu'il me fallait. Simple, efficace, rien de plus."</p>
-        <div class="testi-author">Karim B.</div>
-        <div class="testi-role">Bar & Tapas · Bordeaux</div>
+        <p class="testi-text">« Le bip sur le téléphone quand une commande arrive, c'est satisfaisant. Mes clients adorent, moi aussi. »</p>
+        <div class="testi-author">Kévin M.</div>
+        <div class="testi-role">Bar à tapas · Nantes</div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- CTA + CONTACT FORM -->
+<!-- CTA FINAL -->
 <section class="cta-section" id="contact">
-  <div style="max-width:1100px;margin:0 auto;">
-    <div class="section-label">Démarrer</div>
-    <h2>Lancez votre click & collect<br>aujourd'hui.</h2>
-    <p>Laissez-nous vos coordonnées. On vous contacte dans la journée et on met tout en place ensemble.</p>
+  <div class="container">
+    <div class="label">On démarre ?</div>
+    <h2>Vos clients attendent.<br>Votre lien, non.</h2>
+    <p>Laissez-nous vos coordonnées. On vous contacte dans la journée et on met tout en place ensemble — gratuitement.</p>
 
-    <div class="contact-form">
+    <div class="form-wrap">
       <div id="form-content">
-        <div class="form-row">
-          <label>Votre nom</label>
-          <input type="text" id="f-name" placeholder="Jean Dupont">
+        <div class="form-grid">
+          <div class="form-row">
+            <label>Prénom & Nom</label>
+            <input type="text" id="f-name" placeholder="Jean Dupont">
+          </div>
+          <div class="form-row">
+            <label>Téléphone</label>
+            <input type="tel" id="f-phone" placeholder="06 12 34 56 78">
+          </div>
         </div>
         <div class="form-row">
           <label>Email</label>
           <input type="email" id="f-email" placeholder="vous@votrecommerce.fr">
         </div>
-        <div class="form-row">
-          <label>Téléphone</label>
-          <input type="tel" id="f-phone" placeholder="06 12 34 56 78">
+        <div class="form-grid">
+          <div class="form-row">
+            <label>Nom du commerce</label>
+            <input type="text" id="f-commerce" placeholder="Le Petit Bistrot">
+          </div>
+          <div class="form-row">
+            <label>Type de commerce</label>
+            <select id="f-type">
+              <option value="">— Choisir —</option>
+              <option>Restaurant</option>
+              <option>Boulangerie / Pâtisserie</option>
+              <option>Bar / Café</option>
+              <option>Traiteur</option>
+              <option>Épicerie fine</option>
+              <option>Boucher / Charcutier</option>
+              <option>Primeur</option>
+              <option>Autre</option>
+            </select>
+          </div>
         </div>
-        <div class="form-row">
-          <label>Nom de votre commerce</label>
-          <input type="text" id="f-commerce" placeholder="Le Petit Bistrot">
-        </div>
-        <div class="form-row">
-          <label>Type de commerce</label>
-          <select id="f-type">
-            <option value="">— Sélectionnez —</option>
-            <option>Restaurant</option>
-            <option>Boulangerie / Pâtisserie</option>
-            <option>Bar / Café</option>
-            <option>Traiteur</option>
-            <option>Autre</option>
-          </select>
-        </div>
-        <button class="form-submit" onclick="submitForm()">Je veux lancer mon click & collect →</button>
+        <button class="form-submit" onclick="submitForm()">Je veux mes 10% →</button>
+        <p class="form-legal">Aucun engagement. On vous rappelle pour tout mettre en place ensemble.</p>
       </div>
       <div class="form-success" id="form-success">
-        ✓ Demande reçue ! On vous contacte dans la journée.
+        <span class="form-success-icon">✅</span>
+        <h3>Demande reçue !</h3>
+        <p>On vous contacte dans la journée pour tout mettre en place ensemble. À très vite.</p>
       </div>
     </div>
   </div>
@@ -465,17 +504,17 @@ footer a:hover { color: var(--text); }
 
 <!-- FOOTER -->
 <footer>
-  <div><strong style="color:var(--green)">ORDR.</strong> — Click & Collect pour les commerces de proximité</div>
-  <div>
-    <a href="/admin/login">Admin</a>
+  <div><strong style="color:var(--green);font-size:15px;font-weight:900;">ORDR.</strong> &nbsp;·&nbsp; Click & Collect pour les vrais commerçants</div>
+  <div style="display:flex;gap:20px;">
+    <a href="/admin/login">Espace admin</a>
   </div>
 </footer>
 
 <script>
-function submitForm() {
+async function submitForm() {
   const name     = document.getElementById('f-name').value.trim();
-  const email    = document.getElementById('f-email').value.trim();
   const phone    = document.getElementById('f-phone').value.trim();
+  const email    = document.getElementById('f-email').value.trim();
   const commerce = document.getElementById('f-commerce').value.trim();
   const type     = document.getElementById('f-type').value;
 
@@ -484,18 +523,23 @@ function submitForm() {
     return;
   }
 
-  fetch('/api/contact', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ name, email, phone, commerce, type }),
-  })
-  .then(() => {
+  const btn = document.querySelector('.form-submit');
+  btn.textContent = 'Envoi en cours…';
+  btn.disabled = true;
+
+  try {
+    await fetch('/api/contact', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name, email, phone, commerce, type }),
+    });
     document.getElementById('form-content').style.display = 'none';
     document.getElementById('form-success').style.display = 'block';
-  })
-  .catch(() => {
-    alert('Une erreur est survenue. Réessayez ou contactez-nous directement.');
-  });
+  } catch(e) {
+    btn.textContent = 'Je veux mes 10% →';
+    btn.disabled = false;
+    alert('Une erreur est survenue. Réessayez.');
+  }
 }
 </script>
 </body>
