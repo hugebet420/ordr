@@ -32,17 +32,17 @@ body {
 /* ── ORBS ── */
 .orb {
   position: fixed; border-radius: 50%;
-  filter: blur(130px); pointer-events: none; z-index: 0;
+  filter: blur(90px); pointer-events: none; z-index: 0;
 }
-.orb-1 { width: 800px; height: 800px; background: #00E676; opacity:.22; top:-250px; left:-250px; animation: o1 20s ease-in-out infinite; }
-.orb-2 { width: 600px; height: 600px; background: #FF6B2B; opacity:.18; top:35vh; right:-180px; animation: o2 25s ease-in-out infinite; }
-.orb-3 { width: 700px; height: 700px; background: #5B4FE8; opacity:.20; bottom:0; left:15%; animation: o3 28s ease-in-out infinite; }
+.orb-1 { width: 700px; height: 700px; background: #00E676; opacity:.38; top:-180px; left:-180px; animation: o1 20s ease-in-out infinite; }
+.orb-2 { width: 550px; height: 550px; background: #FF6B2B; opacity:.30; top:30vh; right:-140px; animation: o2 25s ease-in-out infinite; }
+.orb-3 { width: 650px; height: 650px; background: #5B4FE8; opacity:.32; bottom:0; left:15%; animation: o3 28s ease-in-out infinite; }
 @keyframes o1 { 0%,100%{transform:translate(0,0)} 50%{transform:translate(80px,50px)} }
 @keyframes o2 { 0%,100%{transform:translate(0,0)} 50%{transform:translate(-50px,70px)} }
 @keyframes o3 { 0%,100%{transform:translate(0,0)} 50%{transform:translate(40px,-60px)} }
 
 /* ── Z ── */
-nav, section, footer, .hero { position: relative; z-index: 1; }
+nav, section, footer, .hero, .promo-wrap { position: relative; z-index: 1; }
 
 /* ── NAV ── */
 nav {
@@ -362,10 +362,8 @@ footer a:hover { color:var(--text); }
   <div class="hero-eyebrow">Click &amp; Collect · Pour les vrais commerçants</div>
 
   <h1>
-    <span class="fade">Ce soir,</span><br>
-    <span class="fade">des clients ont voulu</span><br>
-    commander chez vous.<br>
-    <span class="bitter">Ils n'ont pas pu.</span>
+    Ce soir, ils ont commandé<br>
+    <span class="bitter">chez votre concurrent.</span>
   </h1>
 
   <p class="hero-resolve">En 10 minutes, ça ne se reproduit <em>plus jamais.</em></p>
@@ -531,7 +529,7 @@ footer a:hover { color:var(--text); }
           <li><span class="chk">✓</span> Espace commerçant dédié</li>
           <li><span class="chk">✓</span> Support réactif — on répond</li>
         </ul>
-        <a href="#contact" class="btn-main" style="width:100%;justify-content:center;margin-top:32px;">Je veux mes 90% →</a>
+        <a href="#contact" class="btn-main" style="display:flex;width:100%;justify-content:center;margin-top:32px;">Je veux mes 90% →</a>
       </div>
 
       <div class="calc-box glass">
@@ -559,7 +557,7 @@ footer a:hover { color:var(--text); }
 <section class="cta-section" id="contact">
   <div class="container fade-up">
     <div class="s-label">Ce soir</div>
-    <h2 class="cta-h">Vos clients peuvent<br>commander chez vous.<br><em>Ou pas.</em></h2>
+    <h2 class="cta-h">Ce soir, vos clients<br>commandent <em>chez vous.</em></h2>
     <p class="cta-p">Laissez-nous vos coordonnées. On vous rappelle dans la journée et on met tout en place ensemble. Gratuitement.</p>
 
     <div class="form-wrap glass-strong">
@@ -644,17 +642,18 @@ async function submitForm() {
   btn.disabled = true;
 
   try {
-    await fetch('/api/contact', {
+    const res = await fetch('/api/contact', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ name, email, phone, commerce, type }),
     });
+    if (!res.ok) throw new Error('server');
     document.getElementById('form-content').style.display = 'none';
     document.getElementById('form-success').style.display = 'block';
   } catch(e) {
     btn.textContent = 'Ce soir, mes clients peuvent commander →';
     btn.disabled = false;
-    alert('Une erreur est survenue. Réessayez.');
+    alert('Une erreur est survenue. Réessayez dans quelques secondes.');
   }
 }
 </script>
