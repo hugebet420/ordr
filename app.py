@@ -288,11 +288,14 @@ def admin_shop(shop_id):
     shop = db.get_shop(shop_id)
     if not shop:
         return render_template("404.html"), 404
-    orders = db.list_orders(shop_id)
+    orders   = db.list_orders(shop_id)
+    merchant = db.get_merchant_by_shop(shop_id)
+    shop["has_merchant"] = merchant is not None
     return render_template(
         "admin_shop.html",
         shop=shop, shop_id=shop_id, orders=orders,
         public_url=f"{BASE_URL}/shop/{shop_id}",
+        base_url=BASE_URL,
     )
 
 @app.route("/admin/new")
@@ -475,11 +478,82 @@ def api_create_manual():
     })
     return jsonify({"success": True, "shop_id": sid})
 
+@app.route("/api/shop/<shop_id>/horaires", methods=["POST"])
+@admin_required
+def api_set_horaires(shop_id):
+    shop = db.get_shop(shop_id)
+    if not shop:
+        return jsonify({"error": "Commerce inconnu"}), 404
+    shop["horaires"] = request.get_json() or {}
+    db.update_shop(shop_id, shop)
+    return jsonify({"success": True})
+
+@app.route("/api/shop/<shop_id>/merchant-password", methods=["POST"])
+@admin_required
+def api_set_merchant_password(shop_id):
+    pwd = (request.get_json() or {}).get("password", "").strip()
+    if len(pwd) < 4:
+        return jsonify({"error": "Mot de passe trop court (4 caractères min)"}), 400
+    db.create_merchant(shop_id, pwd)
+    return jsonify({"success": True})
+
 @app.route("/api/shop/<shop_id>/delete", methods=["POST"])
 @admin_required
 def api_delete_shop(shop_id):
     db.delete_shop(shop_id)
     return jsonify({"success": True})
+
+
+# ── Espace commerçant ──────────────────────────────────────────────────────────
+
+def merchant_required(f):
+    @functools.wraps(f)
+    def wrapped(shop_id, *args, **kwargs):
+        if not session.get(f"merchant_{shop_id}"):
+            return redirect(f"/m/{shop_id}")
+        return f(shop_id, *args, **kwargs)
+    return wrapped
+
+@app.route("/m/<shop_id>", methods=["GET", "POST"])
+def merchant_login(shop_id):
+    shop = db.get_shop(shop_id)
+    if not shop:
+        return render_template("404.html"), 404
+    merchant = db.get_merchant_by_shop(shop_id)
+    if not merchant:
+        return "Accès commerçant non configuré. Contactez ORDR.", 403
+    error = None
+    if request.method == "POST":
+        if db.verify_merchant(shop_id, request.form.get("password", "")):
+            session[f"merchant_{shop_id}"] = True
+            return redirect(f"/m/{shop_id}/dashboard")
+        error = "Mot de passe incorrect."
+    return render_template("merchant_login.html", shop=shop, error=error)
+
+@app.route("/m/<shop_id>/dashboard")
+@merchant_required
+def merchant_dashboard(shop_id):
+    shop   = db.get_shop(shop_id)
+    orders = db.list_orders(shop_id)
+    return render_template(
+        "merchant_dashboard.html",
+        shop=shop, shop_id=shop_id, orders=orders,
+        public_url=f"{BASE_URL}/shop/{shop_id}",
+        now=time.strftime("%Y-%m-%d %H:%M:%S"),
+    )
+
+@app.route("/m/<shop_id>/poll")
+@merchant_required
+def merchant_poll(shop_id):
+    since = request.args.get("since", "")
+    now   = time.strftime("%Y-%m-%d %H:%M:%S")
+    count = db.count_new_orders(shop_id, since) if since else 0
+    return jsonify({"new_count": count, "now": now})
+
+@app.route("/m/<shop_id>/logout")
+def merchant_logout(shop_id):
+    session.pop(f"merchant_{shop_id}", None)
+    return redirect(f"/m/{shop_id}")
 
 
 # ── Static ─────────────────────────────────────────────────────────────────────

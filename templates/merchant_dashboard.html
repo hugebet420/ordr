@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>{{ shop.nom_commerce }} — Commandes</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{--primary:#10B981;--bg:#0F172A;--card:rgba(255,255,255,.06);--border:rgba(255,255,255,.1);--text:#F1F5F9;--sec:#94A3B8;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-font-smoothing:antialiased;}
+body{font-family:'Inter',system-ui,sans-serif;background:linear-gradient(135deg,#0F172A,#1E293B);
+     min-height:100vh;color:var(--text);padding-bottom:60px;}
+.topbar{display:flex;align-items:center;gap:12px;padding:18px 20px;
+        background:rgba(15,23,42,.8);backdrop-filter:blur(20px);
+        border-bottom:1px solid var(--border);position:sticky;top:0;z-index:50;}
+.topbar .logo{font-size:18px;font-weight:900;color:var(--primary);}
+.topbar .name{font-size:15px;font-weight:700;color:var(--text);}
+.topbar .logout{margin-left:auto;font-size:13px;color:var(--sec);text-decoration:none;
+                padding:6px 12px;border:1px solid var(--border);border-radius:8px;}
+.page{max-width:680px;margin:0 auto;padding:20px 16px;}
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:24px;}
+.stat{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:18px 20px;}
+.stat-val{font-size:30px;font-weight:800;color:var(--text);line-height:1;}
+.stat-lbl{font-size:12px;color:var(--sec);margin-top:4px;}
+.section-title{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;
+               color:var(--sec);margin-bottom:12px;}
+.order-card{background:var(--card);border:1px solid var(--border);border-radius:16px;
+            padding:18px 20px;margin-bottom:12px;transition:border-color .15s;}
+.order-card.new-order{border-color:var(--primary);box-shadow:0 0 0 1px var(--primary);}
+.order-top{display:flex;align-items:flex-start;gap:10px;margin-bottom:12px;}
+.order-client{font-size:16px;font-weight:700;flex:1;}
+.order-slot{font-size:13px;color:var(--sec);margin-top:2px;}
+.order-total{font-size:18px;font-weight:800;color:var(--primary);white-space:nowrap;}
+.order-items{border-top:1px solid var(--border);padding-top:12px;}
+.item-row{display:flex;justify-content:space-between;font-size:14px;padding:5px 0;}
+.item-choices{font-size:12px;color:var(--sec);margin-top:2px;line-height:1.5;}
+.badge{display:inline-flex;align-items:center;font-size:11px;font-weight:700;
+       padding:3px 9px;border-radius:999px;}
+.badge-cash{background:rgba(245,158,11,.15);color:#F59E0B;}
+.badge-paid{background:rgba(16,185,129,.15);color:#10B981;}
+.order-time{font-size:12px;color:var(--sec);margin-top:10px;}
+.empty{text-align:center;padding:60px 20px;color:var(--sec);}
+.empty-icon{font-size:48px;display:block;margin-bottom:12px;}
+
+/* Notification toast */
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);
+       background:var(--primary);color:#fff;padding:14px 24px;border-radius:14px;
+       font-size:15px;font-weight:700;box-shadow:0 8px 24px rgba(0,0,0,.4);
+       transition:transform .3s cubic-bezier(.22,1,.36,1);z-index:999;white-space:nowrap;}
+.toast.show{transform:translateX(-50%) translateY(0);}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div>
+    <div class="logo">ORDR.</div>
+    <div class="name">{{ shop.nom_commerce }}</div>
+  </div>
+  <a href="/m/{{ shop_id }}/logout" class="logout">Déconnexion</a>
+</div>
+
+<div class="page">
+  <div class="stats">
+    <div class="stat">
+      <div class="stat-val" id="order-count">{{ orders|length }}</div>
+      <div class="stat-lbl">Commandes aujourd'hui</div>
+    </div>
+    <div class="stat">
+      <div class="stat-val" id="revenue">{{ '%.0f'|format(orders|sum(attribute='total')) }} €</div>
+      <div class="stat-lbl">Chiffre du jour</div>
+    </div>
+  </div>
+
+  <div class="section-title">Commandes en cours</div>
+
+  <div id="orders-list">
+  {% if orders %}
+    {% for o in orders %}
+    <div class="order-card">
+      <div class="order-top">
+        <div>
+          <div class="order-client">{{ o.customer_name or '—' }}</div>
+          <div class="order-slot">{% if o.slot %}🕐 {{ o.slot }}{% endif %}{% if o.customer_phone %} · 📞 {{ o.customer_phone }}{% endif %}</div>
+        </div>
+        <div style="text-align:right;">
+          <div class="order-total">{{ '%.2f €'|format(o.total or 0) }}</div>
+          {% if o.status == 'à régler sur place' %}
+          <span class="badge badge-cash">Sur place</span>
+          {% else %}
+          <span class="badge badge-paid">✓ Payé</span>
+          {% endif %}
+        </div>
+      </div>
+      <div class="order-items">
+        {% for it in o.items %}
+        <div class="item-row">
+          <div>
+            <div>{{ it.qty }}× {{ it.name }}</div>
+            {% if it.choices %}
+            <div class="item-choices">
+              {% for k,v in it.choices.items() %}{{ k }} : {{ v }}<br>{% endfor %}
+            </div>
+            {% endif %}
+          </div>
+          <div style="color:var(--sec);">{{ '%.2f €'|format((it.price or 0) * (it.qty or 1)) }}</div>
+        </div>
+        {% endfor %}
+      </div>
+      <div class="order-time">{{ o.created_at }}</div>
+    </div>
+    {% endfor %}
+  {% else %}
+    <div class="empty">
+      <span class="empty-icon">🛍</span>
+      <p>Aucune commande pour l'instant.<br>Partagez votre lien de commande !</p>
+      <div style="margin-top:16px;background:var(--card);border:1px solid var(--border);
+                  border-radius:10px;padding:12px 16px;font-size:13px;color:var(--sec);word-break:break-all;">
+        {{ public_url }}
+      </div>
+    </div>
+  {% endif %}
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const SHOP_ID   = "{{ shop_id }}";
+const PUBLIC_URL = "{{ public_url }}";
+let lastCheck   = "{{ now }}";
+let audioCtx    = null;
+
+function beep() {
+  try {
+    if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    osc.connect(gain); gain.connect(audioCtx.destination);
+    osc.frequency.value = 880;
+    gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.4);
+    osc.start(); osc.stop(audioCtx.currentTime + 0.4);
+  } catch(e) {}
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 4000);
+}
+
+async function pollOrders() {
+  try {
+    const r = await fetch(`/m/${SHOP_ID}/poll?since=${encodeURIComponent(lastCheck)}`);
+    const d = await r.json();
+    if (d.new_count > 0) {
+      beep();
+      showToast(`🛍 ${d.new_count} nouvelle${d.new_count > 1 ? 's' : ''} commande${d.new_count > 1 ? 's' : ''} !`);
+      setTimeout(() => location.reload(), 1500);
+    }
+    lastCheck = d.now;
+  } catch(e) {}
+}
+
+// Activer l'audio au premier touch (requis par iOS)
+document.addEventListener('touchstart', () => {
+  if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+}, { once: true });
+
+setInterval(pollOrders, 8000);
+</script>
+</body>
+</html>

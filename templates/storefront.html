@@ -178,10 +178,32 @@ body { font-family: 'Inter', system-ui, sans-serif; background: var(--bg); color
       <label>Créneau de retrait *</label>
       <select id="slot-select">
         <option value="">— Choisir un créneau —</option>
-        {% for h in range(9, 20) %}
-        <option>{{ '%02d'|format(h) }}:00 – {{ '%02d'|format(h) }}:30</option>
-        <option>{{ '%02d'|format(h) }}:30 – {{ '%02d'|format(h+1) }}:00</option>
-        {% endfor %}
+        {% set jours_map = {'0':'dim','1':'lun','2':'mar','3':'mer','4':'jeu','5':'ven','6':'sam'} %}
+        {% set horaires = shop.horaires or {} %}
+        {% if horaires %}
+          {# Générer les créneaux à partir des horaires définis #}
+          {% for day_offset in range(7) %}
+            {# On génère pour les 7 prochains jours #}
+          {% endfor %}
+          {# Fallback : afficher les créneaux du jour courant ou jours ouverts #}
+          {% for key, h in horaires.items() %}
+            {% if h.get('ouvert') %}
+              {% set open_h = h.get('open','08:00').split(':')[0]|int %}
+              {% set close_h = h.get('close','20:00').split(':')[0]|int %}
+              <optgroup label="{{ {'lun':'Lundi','mar':'Mardi','mer':'Mercredi','jeu':'Jeudi','ven':'Vendredi','sam':'Samedi','dim':'Dimanche'}[key] }}">
+              {% for hh in range(open_h, close_h) %}
+              <option>{{ '%02d'|format(hh) }}:00 – {{ '%02d'|format(hh) }}:30</option>
+              <option>{{ '%02d'|format(hh) }}:30 – {{ '%02d'|format(hh+1) }}:00</option>
+              {% endfor %}
+              </optgroup>
+            {% endif %}
+          {% endfor %}
+        {% else %}
+          {% for h in range(9, 20) %}
+          <option>{{ '%02d'|format(h) }}:00 – {{ '%02d'|format(h) }}:30</option>
+          <option>{{ '%02d'|format(h) }}:30 – {{ '%02d'|format(h+1) }}:00</option>
+          {% endfor %}
+        {% endif %}
       </select>
     </div>
     <button class="pay-btn" id="pay-btn" onclick="startCheckout()">Confirmer la commande →</button>

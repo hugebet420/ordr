@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>{{ shop.nom_commerce }} — Espace commerçant</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',system-ui,sans-serif;background:linear-gradient(135deg,#0F172A,#1E293B);
+     min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px;}
+.box{width:100%;max-width:380px;}
+.logo{font-size:28px;font-weight:900;color:#10B981;letter-spacing:-1px;margin-bottom:4px;}
+.shop-name{font-size:18px;font-weight:700;color:#F1F5F9;margin-bottom:4px;}
+.sub{color:#64748B;font-size:14px;margin-bottom:32px;}
+.card{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);
+      border-radius:20px;padding:28px;backdrop-filter:blur(20px);}
+.field{margin-bottom:16px;}
+.field label{display:block;font-size:13px;font-weight:600;color:#94A3B8;margin-bottom:7px;}
+.field input{width:100%;padding:12px 14px;background:rgba(255,255,255,.07);
+             border:1px solid rgba(255,255,255,.14);border-radius:10px;
+             color:#F1F5F9;font-family:inherit;font-size:16px;outline:none;}
+.field input:focus{border-color:#10B981;box-shadow:0 0 0 3px rgba(16,185,129,.15);}
+.btn{width:100%;padding:13px;background:#10B981;color:#fff;border:none;
+     border-radius:10px;font-family:inherit;font-size:15px;font-weight:700;
+     cursor:pointer;margin-top:4px;}
+.error{background:rgba(239,68,68,.15);border:1px solid rgba(239,68,68,.3);
+       border-radius:10px;padding:12px 14px;color:#EF4444;font-size:14px;margin-bottom:16px;}
+</style>
+</head>
+<body>
+<div class="box">
+  <div class="logo">ORDR.</div>
+  <div class="shop-name">{{ shop.nom_commerce }}</div>
+  <div class="sub">Espace commerçant</div>
+  <div class="card">
+    {% if error %}<div class="error">{{ error }}</div>{% endif %}
+    <form method="POST">
+      <div class="field">
+        <label>Mot de passe</label>
+        <input type="password" name="password" placeholder="••••••••" autofocus autocomplete="current-password">
+      </div>
+      <button type="submit" class="btn">Accéder à mes commandes</button>
+    </form>
+  </div>
+</div>
+</body>
+</html>
