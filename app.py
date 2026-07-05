@@ -92,10 +92,14 @@ def landing():
 @app.route("/api/contact", methods=["POST"])
 def api_contact():
     data     = request.get_json() or {}
-    name     = data.get("name", "")
-    phone    = data.get("phone", "")
-    commerce = data.get("commerce", "")
-    ctype    = data.get("type", "")
+    name     = data.get("name", "").strip()
+    email    = data.get("email", "").strip()
+    phone    = data.get("phone", "").strip()
+    commerce = data.get("commerce", "").strip()
+    ctype    = data.get("type", "").strip()
+    if not name or not phone or not commerce:
+        return jsonify({"error": "Champs manquants"}), 400
+    db.create_lead({"name": name, "email": email, "phone": phone, "commerce": commerce, "type": ctype})
     host = os.environ.get("SMTP_HOST")
     port = int(os.environ.get("SMTP_PORT", 587))
     user = os.environ.get("SMTP_USER")
@@ -103,15 +107,23 @@ def api_contact():
     dest = os.environ.get("NOTIFY_EMAIL") or user
     if all([host, user, pwd, dest]):
         try:
-            body = f"Nouveau lead ORDR\n\nNom : {name}\nTél : {phone}\nCommerce : {commerce}\nType : {ctype}"
+            body = f"Nouveau lead ORDR\n\nNom : {name}\nEmail : {email}\nTél : {phone}\nCommerce : {commerce}\nType : {ctype}"
             msg = MIMEText(body, "plain", "utf-8")
             msg["Subject"] = f"[ORDR] Nouveau lead : {commerce}"
-            msg["From"] = user
-            msg["To"]   = dest
+            msg["From"] = user; msg["To"] = dest
             with smtplib.SMTP(host, port, timeout=10) as s:
                 s.starttls(); s.login(user, pwd); s.send_message(msg)
         except Exception:
             pass
+    return jsonify({"success": True})
+
+@app.route("/api/lead/<lead_id>/status", methods=["POST"])
+@admin_required
+def api_lead_status(lead_id):
+    status = (request.get_json() or {}).get("status", "")
+    if status not in ("nouveau", "contacté", "signé", "refusé"):
+        return jsonify({"error": "Statut invalide"}), 400
+    db.update_lead_status(lead_id, status)
     return jsonify({"success": True})
 
 @app.route("/admin/login", methods=["GET", "POST"])
@@ -305,11 +317,13 @@ def stripe_webhook():
 @admin_required
 def admin_home():
     shops = db.list_shops()
+    leads = db.list_leads()
     stats = {
         "total_shops":  len(shops),
         "total_orders": sum(len(db.list_orders(s["id"])) for s in shops),
+        "new_leads":    sum(1 for l in leads if l["status"] == "nouveau"),
     }
-    return render_template("admin.html", shops=shops, stats=stats)
+    return render_template("admin.html", shops=shops, stats=stats, leads=leads)
 
 @app.route("/admin/shop/<shop_id>")
 @admin_required

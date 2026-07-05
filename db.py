@@ -63,6 +63,17 @@ def init_db():
                 FOREIGN KEY (shop_id) REFERENCES shops(id) ON DELETE CASCADE
             );
 
+            CREATE TABLE IF NOT EXISTS leads (
+                id         TEXT PRIMARY KEY,
+                name       TEXT,
+                email      TEXT,
+                phone      TEXT,
+                commerce   TEXT,
+                type       TEXT,
+                status     TEXT NOT NULL DEFAULT 'nouveau',
+                created_at TEXT NOT NULL
+            );
+
             CREATE INDEX IF NOT EXISTS idx_orders_shop    ON orders(shop_id);
             CREATE INDEX IF NOT EXISTS idx_orders_session ON orders(stripe_session_id);
         """)
@@ -219,3 +230,29 @@ def get_merchant_by_shop(shop_id: str) -> dict | None:
 def verify_merchant(shop_id: str, password: str) -> bool:
     m = get_merchant_by_shop(shop_id)
     return m is not None and m["password"] == _hash(password)
+
+
+# ── Leads ──────────────────────────────────────────────────────────────────────
+
+def create_lead(data: dict) -> str:
+    lid = uuid.uuid4().hex[:10]
+    with _conn() as con:
+        con.execute("""
+            INSERT INTO leads (id, name, email, phone, commerce, type, status, created_at)
+            VALUES (?,?,?,?,?,?,?,?)
+        """, (
+            lid,
+            data.get("name"), data.get("email"), data.get("phone"),
+            data.get("commerce"), data.get("type"), "nouveau",
+            time.strftime("%Y-%m-%d %H:%M:%S"),
+        ))
+    return lid
+
+def list_leads() -> list[dict]:
+    with _conn() as con:
+        rows = con.execute("SELECT * FROM leads ORDER BY created_at DESC").fetchall()
+    return [dict(r) for r in rows]
+
+def update_lead_status(lead_id: str, status: str):
+    with _conn() as con:
+        con.execute("UPDATE leads SET status = ? WHERE id = ?", (status, lead_id))

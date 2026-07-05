@@ -432,6 +432,10 @@ footer a:hover { color: var(--text); }
           <input type="text" id="f-name" placeholder="Jean Dupont">
         </div>
         <div class="form-row">
+          <label>Email</label>
+          <input type="email" id="f-email" placeholder="vous@votrecommerce.fr">
+        </div>
+        <div class="form-row">
           <label>Téléphone</label>
           <input type="tel" id="f-phone" placeholder="06 12 34 56 78">
         </div>
@@ -470,6 +474,7 @@ footer a:hover { color: var(--text); }
 <script>
 function submitForm() {
   const name     = document.getElementById('f-name').value.trim();
+  const email    = document.getElementById('f-email').value.trim();
   const phone    = document.getElementById('f-phone').value.trim();
   const commerce = document.getElementById('f-commerce').value.trim();
   const type     = document.getElementById('f-type').value;
@@ -482,7 +487,7 @@ function submitForm() {
   fetch('/api/contact', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ name, phone, commerce, type }),
+    body: JSON.stringify({ name, email, phone, commerce, type }),
   })
   .then(() => {
     document.getElementById('form-content').style.display = 'none';

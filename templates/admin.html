@@ -23,7 +23,52 @@
       <div class="stat-value">{{ stats.total_orders }}</div>
       <div class="stat-label">Commande{{ 's' if stats.total_orders > 1 else '' }} reçue{{ 's' if stats.total_orders > 1 else '' }}</div>
     </div>
+    <div class="card stat-card" style="{% if stats.new_leads > 0 %}border-color:var(--primary);{% endif %}">
+      <div class="stat-value" style="{% if stats.new_leads > 0 %}color:var(--primary);{% endif %}">{{ stats.new_leads }}</div>
+      <div class="stat-label">Lead{{ 's' if stats.new_leads > 1 else '' }} à contacter</div>
+    </div>
   </div>
+
+  {% if leads %}
+  <div class="card-title" style="margin-bottom:12px;">Demandes de commerçants</div>
+  <div class="card" style="margin-bottom:24px;padding:0;overflow:hidden;">
+    <table style="width:100%;border-collapse:collapse;font-size:14px;">
+      <thead>
+        <tr style="background:rgba(255,255,255,.04);border-bottom:1px solid var(--border);">
+          <th style="padding:12px 16px;text-align:left;font-weight:600;color:var(--text-sec);">Commerce</th>
+          <th style="padding:12px 16px;text-align:left;font-weight:600;color:var(--text-sec);">Contact</th>
+          <th style="padding:12px 16px;text-align:left;font-weight:600;color:var(--text-sec);">Type</th>
+          <th style="padding:12px 16px;text-align:left;font-weight:600;color:var(--text-sec);">Date</th>
+          <th style="padding:12px 16px;text-align:left;font-weight:600;color:var(--text-sec);">Statut</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for l in leads %}
+        <tr style="border-bottom:1px solid var(--border);" id="lead-{{ l.id }}">
+          <td style="padding:12px 16px;font-weight:600;">{{ l.commerce }}</td>
+          <td style="padding:12px 16px;color:var(--text-sec);">
+            {{ l.name }}<br>
+            {% if l.email %}<a href="mailto:{{ l.email }}" style="color:var(--primary);">{{ l.email }}</a><br>{% endif %}
+            {{ l.phone }}
+          </td>
+          <td style="padding:12px 16px;color:var(--text-sec);">{{ l.type }}</td>
+          <td style="padding:12px 16px;color:var(--text-muted);font-size:12px;">{{ l.created_at[:10] }}</td>
+          <td style="padding:12px 16px;">
+            <select onchange="setLeadStatus('{{ l.id }}', this.value)"
+              style="background:rgba(255,255,255,.07);border:1px solid var(--border);border-radius:8px;
+                     color:var(--text);font-family:inherit;font-size:13px;padding:5px 10px;cursor:pointer;">
+              <option value="nouveau"   {% if l.status == 'nouveau'   %}selected{% endif %}>🔵 Nouveau</option>
+              <option value="contacté"  {% if l.status == 'contacté'  %}selected{% endif %}>🟡 Contacté</option>
+              <option value="signé"     {% if l.status == 'signé'     %}selected{% endif %}>🟢 Signé</option>
+              <option value="refusé"    {% if l.status == 'refusé'    %}selected{% endif %}>🔴 Refusé</option>
+            </select>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% endif %}
 
   {% if shops %}
   <div class="shop-grid">
@@ -64,4 +109,16 @@
   </div>
   {% endif %}
 </div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+function setLeadStatus(id, status) {
+  fetch(`/api/lead/${id}/status`, {
+    method: 'POST',
+    headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({status}),
+  });
+}
+</script>
 {% endblock %}
