@@ -4,7 +4,7 @@ app.py — ORDR · Plateforme Click & Collect
 """
 
 from __future__ import annotations
-import os, json, time, uuid, functools, smtplib
+import os, json, time, uuid, functools, smtplib, urllib.request
 from email.mime.text import MIMEText
 from flask import (Flask, request, jsonify, render_template,
                    redirect, send_from_directory, session)
@@ -37,6 +37,42 @@ def platform_fee(total_eur: float) -> int:
 
 
 # ── Notifications email ────────────────────────────────────────────────────────
+
+def _notify_lead_brevo(lead: dict) -> bool:
+    api_key = os.environ.get("BREVO_API_KEY", "").strip()
+    dest    = os.environ.get("NOTIFY_EMAIL", "").strip()
+    if not api_key or not dest:
+        return False
+    try:
+        payload = json.dumps({
+            "sender":      {"name": "ORDR Leads", "email": dest},
+            "to":          [{"email": dest}],
+            "subject":     f"[ORDR] Nouveau lead — {lead.get('commerce', '?')}",
+            "textContent": (
+                f"Nouveau lead ORDR\n\n"
+                f"Nom      : {lead.get('name', '')}\n"
+                f"Email    : {lead.get('email', '')}\n"
+                f"Tél      : {lead.get('phone', '')}\n"
+                f"Commerce : {lead.get('commerce', '')}\n"
+                f"Type     : {lead.get('type', '')}\n\n"
+                f"→ Voir dans l'admin : {BASE_URL}/admin"
+            ),
+        }, ensure_ascii=False).encode("utf-8")
+        req = urllib.request.Request(
+            "https://api.brevo.com/v3/smtp/email",
+            data=payload,
+            headers={
+                "api-key":      api_key,
+                "Content-Type": "application/json",
+                "Accept":       "application/json",
+            },
+            method="POST",
+        )
+        urllib.request.urlopen(req, timeout=10)
+        return True
+    except Exception:
+        return False
+
 
 def try_notify_order(shop_id: str, order: dict):
     host = os.environ.get("SMTP_HOST")
@@ -99,22 +135,25 @@ def api_contact():
     ctype    = data.get("type", "").strip()
     if not name or not phone or not commerce:
         return jsonify({"error": "Champs manquants"}), 400
-    db.create_lead({"name": name, "email": email, "phone": phone, "commerce": commerce, "type": ctype})
-    host = os.environ.get("SMTP_HOST")
-    port = int(os.environ.get("SMTP_PORT", 587))
-    user = os.environ.get("SMTP_USER")
-    pwd  = os.environ.get("SMTP_PASS")
-    dest = os.environ.get("NOTIFY_EMAIL") or user
-    if all([host, user, pwd, dest]):
-        try:
-            body = f"Nouveau lead ORDR\n\nNom : {name}\nEmail : {email}\nTél : {phone}\nCommerce : {commerce}\nType : {ctype}"
-            msg = MIMEText(body, "plain", "utf-8")
-            msg["Subject"] = f"[ORDR] Nouveau lead : {commerce}"
-            msg["From"] = user; msg["To"] = dest
-            with smtplib.SMTP(host, port, timeout=10) as s:
-                s.starttls(); s.login(user, pwd); s.send_message(msg)
-        except Exception:
-            pass
+    lead = {"name": name, "email": email, "phone": phone, "commerce": commerce, "type": ctype}
+    db.create_lead(lead)
+    # Brevo en priorité, SMTP en fallback
+    if not _notify_lead_brevo(lead):
+        host = os.environ.get("SMTP_HOST")
+        port = int(os.environ.get("SMTP_PORT", 587))
+        user = os.environ.get("SMTP_USER")
+        pwd  = os.environ.get("SMTP_PASS")
+        dest = os.environ.get("NOTIFY_EMAIL") or user
+        if all([host, user, pwd, dest]):
+            try:
+                body = f"Nouveau lead ORDR\n\nNom : {name}\nEmail : {email}\nTél : {phone}\nCommerce : {commerce}\nType : {ctype}"
+                msg = MIMEText(body, "plain", "utf-8")
+                msg["Subject"] = f"[ORDR] Nouveau lead : {commerce}"
+                msg["From"] = user; msg["To"] = dest
+                with smtplib.SMTP(host, port, timeout=10) as s:
+                    s.starttls(); s.login(user, pwd); s.send_message(msg)
+            except Exception:
+                pass
     return jsonify({"success": True})
 
 @app.route("/api/lead/<lead_id>/status", methods=["POST"])
