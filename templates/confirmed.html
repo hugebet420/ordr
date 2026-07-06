@@ -41,11 +41,11 @@ h1{font-size:22px;font-weight:800;margin-bottom:8px;}
 <body>
 <div class="card">
   <div class="check">✓</div>
-  <h1>Commande confirmée !</h1>
+  <h1>Commande enregistrée.</h1>
   <p class="sub">
-    {% if shop %}Votre commande chez <strong>{{ shop.nom_commerce }}</strong> est bien enregistrée.{% else %}Votre commande est bien enregistrée.{% endif %}
+    {% if shop %}Chez <strong>{{ shop.nom_commerce }}</strong>.{% else %}Votre commande est enregistrée.{% endif %}
     {% if request.args.get('cash') %}
-    <br><strong>Paiement à la caisse lors du retrait.</strong>
+    <br>Paiement à la caisse lors du retrait.
     {% endif %}
   </p>
 
