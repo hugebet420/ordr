@@ -3,390 +3,369 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>ORDR — Ce soir, vos clients peuvent commander.</title>
-<meta name="description" content="Chaque soir sans commande en ligne, c'est de l'argent que vous offrez à votre concurrent. ORDR lance votre click & collect en 10 minutes. Gratuit pour commencer.">
+<title>ORDR — Click &amp; collect pour les vrais commerçants</title>
+<meta name="description" content="Votre click &amp; collect en ligne en 10 minutes. Aucun engagement. 10% par commande, zéro à l'avance.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,700;1,800;1,900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 :root {
-  --green: #00E676;
-  --green-d: #00C060;
-  --orange: #FF6B2B;
-  --bg: #04070E;
-  --glass: rgba(255,255,255,0.05);
-  --glass-b: rgba(255,255,255,0.10);
-  --text: #FFFFFF;
-  --sec: rgba(255,255,255,0.55);
-  --muted: rgba(255,255,255,0.28);
+  --cream:    #F5F0E8;
+  --cream-d:  #EDE6D8;
+  --cream-dd: #E0D8C8;
+  --terra:    #C84B2F;
+  --terra-d:  #A83820;
+  --brown:    #1A1208;
+  --mid:      #5C4E38;
+  --muted:    #9C8C78;
+  --forest:   #3D6B4F;
+  --sand:     #D4A574;
 }
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 html { scroll-behavior: smooth; }
 body {
   font-family: 'Inter', system-ui, sans-serif;
-  background: var(--bg);
-  color: var(--text);
+  background: var(--cream);
+  color: var(--brown);
   -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
 }
-
-/* ── ORBS ── */
-.orb {
-  position: fixed; border-radius: 50%;
-  filter: blur(90px); pointer-events: none; z-index: 0;
-}
-.orb-1 { width: 700px; height: 700px; background: #00E676; opacity:.38; top:-180px; left:-180px; animation: o1 20s ease-in-out infinite; }
-.orb-2 { width: 550px; height: 550px; background: #FF6B2B; opacity:.30; top:30vh; right:-140px; animation: o2 25s ease-in-out infinite; }
-.orb-3 { width: 650px; height: 650px; background: #5B4FE8; opacity:.32; bottom:0; left:15%; animation: o3 28s ease-in-out infinite; }
-@keyframes o1 { 0%,100%{transform:translate(0,0)} 50%{transform:translate(80px,50px)} }
-@keyframes o2 { 0%,100%{transform:translate(0,0)} 50%{transform:translate(-50px,70px)} }
-@keyframes o3 { 0%,100%{transform:translate(0,0)} 50%{transform:translate(40px,-60px)} }
-
-/* ── Z ── */
-nav, section, footer, .hero, .promo-wrap { position: relative; z-index: 1; }
+h1, h2, h3 { font-family: 'DM Serif Display', Georgia, serif; }
 
 /* ── NAV ── */
 nav {
-  position: fixed; top:0; left:0; right:0; z-index:100;
-  display:flex; align-items:center; justify-content:space-between;
-  padding: 0 6vw; height:68px;
-  background: rgba(4,7,14,.75);
-  backdrop-filter: blur(28px) saturate(180%);
-  -webkit-backdrop-filter: blur(28px) saturate(180%);
-  border-bottom: 1px solid var(--glass-b);
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 6vw; height: 64px;
+  background: var(--cream);
+  border-bottom: 1px solid var(--cream-dd);
 }
 .logo {
-  font-size:22px; font-weight:900; letter-spacing:-1px;
-  background: linear-gradient(120deg, var(--green), #80FFB8);
-  -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+  font-family: 'DM Serif Display', serif;
+  font-size: 22px; letter-spacing: -0.5px; color: var(--brown);
 }
-.nav-links { display:flex; align-items:center; gap:28px; }
-.nav-links a { color:var(--sec); font-size:14px; font-weight:500; text-decoration:none; transition:color .15s; }
-.nav-links a:hover { color:var(--text); }
+.logo span { color: var(--terra); }
+.nav-links { display: flex; align-items: center; gap: 28px; }
+.nav-links a { color: var(--mid); font-size: 14px; font-weight: 500; text-decoration: none; transition: color .15s; }
+.nav-links a:hover { color: var(--brown); }
 .nav-cta {
-  background:var(--green) !important; color:#000 !important;
-  padding:9px 20px; border-radius:10px; font-weight:800 !important;
-  -webkit-text-fill-color:#000 !important;
+  background: var(--terra) !important; color: #fff !important;
+  padding: 9px 20px; border-radius: 8px; font-weight: 700 !important;
 }
-.nav-cta:hover { opacity:.85 !important; }
-
-/* ── GLASS ── */
-.glass {
-  background: var(--glass);
-  backdrop-filter: blur(24px) saturate(160%);
-  -webkit-backdrop-filter: blur(24px) saturate(160%);
-  border: 1px solid var(--glass-b); border-radius:22px;
-}
-.glass-strong {
-  background: rgba(255,255,255,.07);
-  backdrop-filter: blur(36px) saturate(200%);
-  -webkit-backdrop-filter: blur(36px) saturate(200%);
-  border: 1px solid rgba(255,255,255,.14); border-radius:24px;
-}
+.nav-cta:hover { background: var(--terra-d) !important; }
 
 /* ── HERO ── */
 .hero {
-  min-height:100vh;
-  display:flex; flex-direction:column; align-items:center; justify-content:center;
-  padding: 130px 6vw 80px; text-align:center;
+  min-height: 100vh;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  padding: 130px 6vw 80px; text-align: center;
+  background: var(--cream);
+  border-bottom: 1px solid var(--cream-dd);
 }
-.hero-eyebrow {
-  font-size:13px; font-weight:700; color:var(--muted);
-  letter-spacing:.06em; text-transform:uppercase;
-  margin-bottom:44px;
+.hero-tag {
+  display: inline-block;
+  font-size: 12px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase;
+  color: var(--terra); border: 1px solid var(--terra);
+  padding: 5px 14px; border-radius: 4px; margin-bottom: 40px;
 }
 .hero h1 {
-  font-size: clamp(46px, 7.5vw, 108px);
-  font-weight:900; line-height:.97; letter-spacing:-4px;
-  margin-bottom:0;
+  font-size: clamp(44px, 7vw, 96px);
+  line-height: 1.02; letter-spacing: -2px;
+  color: var(--brown); margin-bottom: 28px;
+  max-width: 820px;
 }
-.hero h1 .fade    { color: var(--sec); }
-.hero h1 .accent  { color: var(--green); }
-.hero h1 .bitter  { color: var(--muted); font-style:italic; }
-
-.hero-resolve {
-  font-size: clamp(17px,2.2vw,22px);
-  font-weight:700; color:var(--text);
-  margin-top:36px; margin-bottom:10px;
-  letter-spacing:-.3px;
-}
-.hero-resolve em { color:var(--green); font-style:normal; }
-
+.hero h1 em { color: var(--terra); font-style: italic; }
 .hero-sub {
-  font-size: clamp(15px,1.7vw,18px);
-  color:var(--sec); line-height:1.6;
-  max-width:480px; margin: 0 auto 48px;
+  font-size: clamp(16px, 1.8vw, 19px);
+  color: var(--mid); line-height: 1.65;
+  max-width: 460px; margin: 0 auto 48px;
 }
-
-.cta-group { display:flex; gap:14px; justify-content:center; flex-wrap:wrap; margin-bottom:56px; }
+.cta-group { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; margin-bottom: 56px; }
 
 .btn-main {
-  display:inline-flex; align-items:center; gap:10px;
-  background:var(--green); color:#000;
-  padding:18px 36px; border-radius:14px;
-  font-family:inherit; font-size:16px; font-weight:800;
-  text-decoration:none; border:none; cursor:pointer;
-  transition:transform .15s, box-shadow .15s;
-  box-shadow: 0 0 50px rgba(0,230,118,.3);
-  letter-spacing:-.3px;
+  display: inline-flex; align-items: center; gap: 10px;
+  background: var(--terra); color: #fff;
+  padding: 16px 32px; border-radius: 8px;
+  font-family: inherit; font-size: 16px; font-weight: 700;
+  text-decoration: none; border: none; cursor: pointer;
+  transition: background .15s, transform .15s;
 }
-.btn-main:hover { transform:translateY(-3px); box-shadow: 0 10px 60px rgba(0,230,118,.4); }
+.btn-main:hover { background: var(--terra-d); transform: translateY(-2px); }
 
 .btn-ghost {
-  display:inline-flex; align-items:center; gap:8px;
-  background:var(--glass); color:var(--sec);
-  padding:18px 28px; border-radius:14px;
-  font-family:inherit; font-size:15px; font-weight:600;
-  text-decoration:none; border:1px solid var(--glass-b);
-  cursor:pointer; backdrop-filter:blur(20px);
-  transition:border-color .15s, color .15s;
+  display: inline-flex; align-items: center; gap: 8px;
+  background: transparent; color: var(--mid);
+  padding: 16px 24px; border-radius: 8px;
+  font-family: inherit; font-size: 15px; font-weight: 600;
+  text-decoration: none; border: 1.5px solid var(--cream-dd);
+  cursor: pointer; transition: border-color .15s, color .15s;
 }
-.btn-ghost:hover { border-color:var(--green); color:var(--text); }
+.btn-ghost:hover { border-color: var(--terra); color: var(--brown); }
 
 .hero-proof {
-  display:flex; gap:0; justify-content:center;
-  border-radius:18px; overflow:hidden;
-  border:1px solid var(--glass-b);
-  backdrop-filter:blur(20px);
-  max-width:600px; margin:0 auto;
-  background:var(--glass);
+  display: flex; gap: 0; justify-content: center;
+  border-radius: 12px; overflow: hidden;
+  border: 1px solid var(--cream-dd);
+  max-width: 560px; margin: 0 auto;
+  background: #fff;
 }
-.proof-item { flex:1; padding:18px 20px; text-align:center; border-right:1px solid var(--glass-b); }
-.proof-item:last-child { border-right:none; }
-.proof-num { font-size:24px; font-weight:900; color:var(--green); letter-spacing:-1px; }
-.proof-label { font-size:11px; color:var(--muted); margin-top:4px; font-weight:500; }
+.proof-item { flex: 1; padding: 18px 20px; text-align: center; border-right: 1px solid var(--cream-dd); }
+.proof-item:last-child { border-right: none; }
+.proof-num { font-family: 'DM Serif Display', serif; font-size: 26px; color: var(--terra); }
+.proof-label { font-size: 11px; color: var(--muted); margin-top: 4px; font-weight: 500; }
 
 /* ── SECTION BASE ── */
-section { padding:110px 6vw; }
-.container { max-width:1100px; margin:0 auto; }
-.s-label { font-size:11px; font-weight:800; letter-spacing:.15em; text-transform:uppercase; color:var(--green); margin-bottom:16px; }
-.s-h { font-size:clamp(32px,4.5vw,58px); font-weight:900; letter-spacing:-2.5px; line-height:1.04; margin-bottom:16px; }
-.s-p { font-size:18px; color:var(--sec); line-height:1.65; max-width:520px; }
-
-/* ── SCENARIOS (pain) ── */
-.scenarios { display:grid; grid-template-columns:repeat(2,1fr); gap:14px; margin-top:52px; }
-.scenario { padding:32px; transition:transform .2s, border-color .2s; }
-.scenario:hover { transform:translateY(-4px); border-color:rgba(0,230,118,.2); }
-.scenario-time {
-  font-size:11px; font-weight:800; color:var(--muted);
-  text-transform:uppercase; letter-spacing:.1em; margin-bottom:16px;
+section { padding: 100px 6vw; }
+.container { max-width: 1100px; margin: 0 auto; }
+.s-label {
+  font-size: 11px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase;
+  color: var(--terra); margin-bottom: 14px;
 }
-.scenario h3 { font-size:18px; font-weight:800; letter-spacing:-.5px; margin-bottom:10px; }
-.scenario p { font-size:14px; color:var(--sec); line-height:1.7; }
-.scenario p strong { color:var(--text); }
-.scenario-loss {
-  display:inline-flex; align-items:center; gap:6px;
-  margin-top:16px; padding:6px 12px; border-radius:8px;
-  background:rgba(255,107,43,.08); border:1px solid rgba(255,107,43,.2);
-  font-size:12px; font-weight:700; color:var(--orange);
+.s-h {
+  font-size: clamp(30px, 4vw, 52px);
+  letter-spacing: -1.5px; line-height: 1.06; margin-bottom: 16px;
+  color: var(--brown);
 }
+.s-p { font-size: 18px; color: var(--mid); line-height: 1.65; max-width: 500px; }
 
-/* ── HOW ── */
-.steps { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin-top:52px; }
-.step { padding:34px; transition:transform .2s; }
-.step:hover { transform:translateY(-4px); }
+/* ── DÉMO ── */
+.demo-grid {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 32px; align-items: start; margin-top: 48px; text-align: left;
+}
+.demo-phone {
+  background: #fff; border: 1px solid var(--cream-dd);
+  border-radius: 16px; padding: 24px;
+}
+.demo-phone-bar { display: flex; gap: 6px; margin-bottom: 20px; }
+.demo-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--cream-dd); }
+.demo-shop-name { font-family: 'DM Serif Display', serif; font-size: 18px; margin-bottom: 4px; color: var(--brown); }
+.demo-shop-sub { font-size: 12px; color: var(--muted); margin-bottom: 16px; }
+.demo-cat-label {
+  font-size: 10px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: .08em; color: var(--muted); margin: 14px 0 6px;
+}
+.demo-items { display: flex; flex-direction: column; gap: 5px; }
+.demo-item {
+  display: flex; justify-content: space-between; align-items: center;
+  font-size: 13px; padding: 9px 12px;
+  background: var(--cream); border-radius: 8px;
+}
+.demo-price { display: flex; align-items: center; gap: 6px; color: var(--mid); white-space: nowrap; }
+.demo-btn {
+  width: 22px; height: 22px; border-radius: 6px;
+  background: var(--terra); color: #fff; font-weight: 700; font-size: 14px;
+  display: flex; align-items: center; justify-content: center;
+}
+.demo-cart-preview {
+  margin-top: 16px; padding: 14px;
+  background: #fff7f5; border: 1px solid rgba(200,75,47,.15); border-radius: 10px;
+}
+.demo-cart-line { display: flex; justify-content: space-between; font-size: 13px; color: var(--muted); padding: 2px 0; }
+.demo-cart-total {
+  display: flex; justify-content: space-between;
+  font-size: 15px; font-weight: 700; margin-top: 8px; padding-top: 8px;
+  border-top: 1px solid rgba(200,75,47,.15); color: var(--brown);
+}
+.demo-cart-total span:last-child { color: var(--terra); }
+
+.demo-right { display: flex; flex-direction: column; gap: 16px; }
+.demo-notif {
+  background: #fff; border: 1px solid var(--cream-dd); border-radius: 16px; padding: 24px;
+}
+.demo-notif-eyebrow {
+  font-size: 10px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: .08em; color: var(--muted); margin-bottom: 14px;
+}
+.demo-notif-card {
+  display: flex; align-items: center; gap: 14px;
+  background: var(--cream); border-radius: 10px; padding: 14px;
+}
+.demo-notif-icon { font-size: 22px; flex-shrink: 0; }
+.demo-notif-title { font-size: 13px; font-weight: 700; color: var(--brown); }
+.demo-notif-body { font-size: 13px; color: var(--mid); margin-top: 3px; }
+.demo-notif-note { font-size: 12px; color: var(--muted); margin-top: 12px; }
+
+/* ── STEPS ── */
+.steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; margin-top: 52px; background: var(--cream-dd); border: 1px solid var(--cream-dd); border-radius: 14px; overflow: hidden; }
+.step { padding: 36px; background: var(--cream); transition: background .15s; }
+.step:hover { background: #fff; }
 .step-n {
-  font-size:11px; font-weight:800; color:var(--green);
-  letter-spacing:.12em; text-transform:uppercase;
-  margin-bottom:20px; display:flex; align-items:center; gap:10px;
+  font-size: 11px; font-weight: 700; color: var(--terra);
+  letter-spacing: .12em; text-transform: uppercase; margin-bottom: 20px;
 }
-.step-n::after { content:''; flex:1; height:1px; background:linear-gradient(90deg,rgba(0,230,118,.3),transparent); }
-.step-icon { font-size:38px; display:block; margin-bottom:18px; }
-.step h3 { font-size:20px; font-weight:800; letter-spacing:-.5px; margin-bottom:10px; }
-.step p { font-size:14px; color:var(--sec); line-height:1.65; }
-.step-note { font-size:12px; color:var(--muted); margin-top:10px; font-style:italic; }
+.step h3 { font-family: 'DM Serif Display', serif; font-size: 22px; margin-bottom: 10px; color: var(--brown); }
+.step p { font-size: 14px; color: var(--mid); line-height: 1.65; }
+.step-note { font-size: 12px; color: var(--muted); margin-top: 10px; font-style: italic; }
 
-/* ── TESTIMONIALS ── */
-.testi-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin-top:52px; }
-.testi { padding:28px; transition:transform .2s, border-color .2s; }
-.testi:hover { border-color:rgba(0,230,118,.25); transform:translateY(-4px); }
-.testi-stars { color:#F59E0B; font-size:14px; letter-spacing:3px; margin-bottom:16px; }
-.testi-text { font-size:15px; line-height:1.75; color:var(--sec); margin-bottom:20px; }
-.testi-text strong { color:var(--text); }
-.testi-author { font-size:14px; font-weight:800; }
-.testi-role { font-size:12px; color:var(--muted); margin-top:3px; }
-
-/* ── PRICING ── */
-.price-intro {
-  max-width:680px;
-  font-size:clamp(28px,3.5vw,48px); font-weight:900;
-  letter-spacing:-2px; line-height:1.1; margin-bottom:56px;
+/* ── SIMULATEUR ── */
+.sim-box {
+  max-width: 680px; margin: 52px auto 0;
+  background: #fff; border: 1px solid var(--cream-dd);
+  border-radius: 16px; padding: 48px; text-align: center;
 }
-.price-intro em { font-style:italic; color:var(--green); }
-.price-intro span { color:var(--muted); text-decoration:line-through; }
+.sim-sliders { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; margin-bottom: 48px; }
+.sim-slider-wrap { text-align: left; }
+.sim-slider-top { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 12px; }
+.sim-slider-name { font-size: 13px; font-weight: 600; color: var(--mid); }
+.sim-slider-val { font-family: 'DM Serif Display', serif; font-size: 24px; color: var(--terra); }
+input[type=range].sim-range {
+  -webkit-appearance: none; width: 100%; height: 3px;
+  background: linear-gradient(90deg, var(--terra) var(--pct, 28%), var(--cream-dd) var(--pct, 28%));
+  border-radius: 2px; outline: none; cursor: pointer;
+}
+input[type=range].sim-range::-webkit-slider-thumb {
+  -webkit-appearance: none; width: 22px; height: 22px; border-radius: 50%;
+  background: var(--terra); cursor: pointer; border: 3px solid #fff;
+  box-shadow: 0 1px 4px rgba(0,0,0,.2);
+}
+.sim-divider { width: 48px; height: 1px; background: var(--cream-dd); margin: 0 auto 36px; }
+.sim-result-label { font-size: 11px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: .14em; margin-bottom: 14px; }
+.sim-result-num {
+  font-family: 'DM Serif Display', serif;
+  font-size: clamp(52px, 9vw, 88px);
+  color: var(--terra); letter-spacing: -2px; line-height: 1;
+}
+.sim-result-num.animate { animation: numPop .25s ease; }
+@keyframes numPop { 0%{transform:scale(1)} 50%{transform:scale(1.04)} 100%{transform:scale(1)} }
+.sim-result-sub { font-size: 13px; color: var(--muted); margin-top: 12px; line-height: 1.6; }
+.sim-weekly { font-size: 16px; color: var(--mid); font-weight: 600; margin-top: 6px; }
+.sim-weekly span { color: var(--terra); }
+.sim-cta-wrap { margin-top: 36px; }
 
-.pricing-layout { display:grid; grid-template-columns:1fr 1fr; gap:20px; align-items:start; }
-.price-card { padding:44px; }
-.price-eyebrow { font-size:11px; font-weight:800; color:var(--green); text-transform:uppercase; letter-spacing:.12em; margin-bottom:20px; }
-.price-num-row { display:flex; align-items:flex-end; gap:4px; margin-bottom:8px; }
-.price-big { font-size:104px; font-weight:900; color:var(--green); line-height:1; letter-spacing:-5px; }
-.price-pct { font-size:44px; font-weight:900; color:var(--green); padding-bottom:16px; }
-.price-tagline { font-size:15px; color:var(--sec); margin-bottom:36px; line-height:1.6; }
-.price-list { list-style:none; border-top:1px solid var(--glass-b); padding-top:28px; }
+/* ── TARIFS ── */
+.offre-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; align-items: start; }
+.price-card {
+  background: #fff; border: 1px solid var(--cream-dd); border-radius: 16px; padding: 40px;
+}
+.price-card-head { margin-bottom: 32px; }
+.price-big {
+  font-family: 'DM Serif Display', serif;
+  font-size: 80px; color: var(--terra); line-height: 1; letter-spacing: -3px;
+  display: inline;
+}
+.price-pct { font-family: 'DM Serif Display', serif; font-size: 36px; color: var(--terra); }
+.price-tagline { font-size: 15px; color: var(--mid); margin-top: 10px; line-height: 1.6; }
+.price-list { list-style: none; border-top: 1px solid var(--cream-dd); padding-top: 24px; }
 .price-list li {
-  display:flex; align-items:center; gap:12px;
-  padding:11px 0; font-size:15px;
-  border-bottom:1px solid var(--glass-b);
+  display: flex; align-items: flex-start; gap: 12px;
+  padding: 11px 0; font-size: 15px; color: var(--mid);
+  border-bottom: 1px solid var(--cream-dd);
 }
-.price-list li:last-child { border-bottom:none; }
-.chk { color:var(--green); font-weight:900; flex-shrink:0; }
+.price-list li:last-child { border-bottom: none; }
+.chk { color: var(--forest); font-weight: 800; flex-shrink: 0; margin-top: 1px; }
 
-.calc-box { padding:38px; }
-.calc-title { font-size:16px; font-weight:800; letter-spacing:-.4px; margin-bottom:28px; }
-.calc-badge {
-  display:inline-block; font-size:10px; font-weight:800;
-  text-transform:uppercase; letter-spacing:.1em;
-  padding:4px 10px; border-radius:6px; margin-bottom:14px;
+/* ── FAQ ── */
+.faq-list { display: flex; flex-direction: column; gap: 8px; margin-top: 0; }
+.faq-item { border-radius: 12px; background: #fff; border: 1px solid var(--cream-dd); overflow: hidden; }
+.faq-q {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 18px 22px; font-size: 15px; font-weight: 600; color: var(--brown);
+  cursor: pointer; list-style: none; user-select: none;
 }
-.badge-us { background:rgba(0,230,118,.1); color:var(--green); }
-.badge-them { background:rgba(255,107,43,.1); color:var(--orange); }
-.calc-row {
-  display:flex; justify-content:space-between; align-items:center;
-  padding:10px 0; border-bottom:1px solid var(--glass-b); font-size:14px;
+.faq-q::-webkit-details-marker { display: none; }
+.faq-q::after { content: '+'; font-size: 20px; font-weight: 400; color: var(--terra); transition: transform .2s; flex-shrink: 0; margin-left: 12px; }
+details[open] .faq-q::after { transform: rotate(45deg); }
+.faq-a {
+  padding: 0 22px 18px; font-size: 14px; line-height: 1.7;
+  color: var(--mid); border-top: 1px solid var(--cream-dd);
 }
-.calc-row:last-of-type { border-bottom:none; }
-.calc-row b { font-weight:800; }
-.c-green { color:var(--green); }
-.c-orange { color:var(--orange); }
-.c-out { color:var(--muted); text-decoration:line-through; }
-.calc-sep { border:none; border-top:1px solid var(--glass-b); margin:22px 0; }
-.calc-verdict {
-  text-align:center; padding:18px; margin-top:20px;
-  background:rgba(0,230,118,.07); border:1px solid rgba(0,230,118,.2);
-  border-radius:14px; font-size:13px; color:var(--sec); line-height:1.7;
-}
-.calc-verdict strong { color:var(--green); font-size:18px; font-weight:900; display:block; margin-bottom:4px; }
 
 /* ── BANNER ── */
 .promo-wrap { padding: 0 6vw 80px; }
 .promo-banner {
-  max-width:1100px; margin:0 auto;
-  padding:30px 40px;
-  display:flex; align-items:center; justify-content:space-between; gap:20px;
-  flex-wrap:wrap;
-  background:linear-gradient(135deg,rgba(0,230,118,.1),rgba(0,230,118,.03));
-  border:1px solid rgba(0,230,118,.25); border-radius:22px;
+  max-width: 1100px; margin: 0 auto;
+  padding: 28px 36px;
+  display: flex; align-items: center; justify-content: space-between; gap: 20px; flex-wrap: wrap;
+  background: var(--terra); border-radius: 14px; color: #fff;
 }
-.promo-text { font-size:21px; font-weight:900; letter-spacing:-.5px; }
-.promo-text span { color:var(--green); }
-.promo-fine { font-size:13px; color:var(--muted); margin-top:5px; }
+.promo-text { font-family: 'DM Serif Display', serif; font-size: 22px; color: #fff; }
+.promo-fine { font-size: 13px; color: rgba(255,255,255,.75); margin-top: 4px; }
+.btn-main-inv {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: #fff; color: var(--terra);
+  padding: 14px 28px; border-radius: 8px;
+  font-family: inherit; font-size: 15px; font-weight: 700;
+  text-decoration: none; border: none; cursor: pointer;
+  transition: opacity .15s; white-space: nowrap;
+}
+.btn-main-inv:hover { opacity: .9; }
 
-/* ── CTA SECTION ── */
-.cta-section { text-align:center; border-top:1px solid var(--glass-b); }
+/* ── CTA FINAL ── */
+.cta-section { text-align: center; border-top: 1px solid var(--cream-dd); background: #fff; }
 .cta-h {
-  font-size:clamp(38px,5.5vw,76px); font-weight:900;
-  letter-spacing:-3px; line-height:1.04; margin-bottom:18px;
+  font-size: clamp(36px, 5vw, 68px);
+  letter-spacing: -2px; line-height: 1.06; margin-bottom: 14px;
 }
-.cta-h em { font-style:italic; color:var(--green); }
-.cta-p { font-size:18px; color:var(--sec); max-width:440px; margin:0 auto 48px; line-height:1.65; }
+.cta-h em { color: var(--terra); font-style: italic; }
+.cta-p { font-size: 17px; color: var(--mid); max-width: 420px; margin: 0 auto 48px; line-height: 1.65; }
 
-.form-wrap { max-width:480px; margin:0 auto; padding:38px; }
-.form-row { margin-bottom:14px; }
-.form-row label { display:block; font-size:11px; font-weight:700; color:var(--muted); text-transform:uppercase; letter-spacing:.08em; margin-bottom:8px; }
+.form-wrap {
+  max-width: 480px; margin: 0 auto;
+  background: var(--cream); border: 1px solid var(--cream-dd);
+  border-radius: 16px; padding: 36px;
+}
+.form-row { margin-bottom: 14px; }
+.form-row label { display: block; font-size: 11px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: .08em; margin-bottom: 8px; }
 .form-row input, .form-row select {
-  width:100%; padding:14px 16px;
-  background:rgba(255,255,255,.06); border:1px solid var(--glass-b);
-  border-radius:12px; color:var(--text);
-  font-family:inherit; font-size:16px; outline:none;
-  transition:border-color .15s, background .15s;
-  -webkit-appearance:none;
+  width: 100%; padding: 13px 15px;
+  background: #fff; border: 1px solid var(--cream-dd);
+  border-radius: 8px; color: var(--brown);
+  font-family: inherit; font-size: 16px; outline: none;
+  transition: border-color .15s;
+  -webkit-appearance: none;
 }
 .form-row input:focus, .form-row select:focus {
-  border-color:var(--green); background:rgba(0,230,118,.05);
-  box-shadow:0 0 0 3px rgba(0,230,118,.12);
+  border-color: var(--terra);
+  box-shadow: 0 0 0 3px rgba(200,75,47,.1);
 }
-.form-row input::placeholder { color:var(--muted); }
-.form-row select option { background:#0E1420; color:var(--text); }
-.form-grid { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+.form-row input::placeholder { color: var(--muted); }
+.form-row select option { background: #fff; color: var(--brown); }
+.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
 .form-submit {
-  width:100%; margin-top:8px; padding:17px;
-  background:var(--green); color:#000;
-  border:none; border-radius:12px;
-  font-family:inherit; font-size:16px; font-weight:800;
-  cursor:pointer; transition:transform .15s, box-shadow .15s;
-  letter-spacing:-.3px;
+  width: 100%; margin-top: 8px; padding: 16px;
+  background: var(--terra); color: #fff;
+  border: none; border-radius: 8px;
+  font-family: inherit; font-size: 16px; font-weight: 700;
+  cursor: pointer; transition: background .15s, transform .15s;
 }
-.form-submit:hover { transform:translateY(-2px); box-shadow:0 8px 40px rgba(0,230,118,.35); }
-.form-legal { font-size:12px; color:var(--muted); text-align:center; margin-top:14px; line-height:1.65; }
-.form-success { display:none; text-align:center; padding:48px 20px; }
-.form-success-icon { font-size:52px; display:block; margin-bottom:18px; }
-.form-success h3 { font-size:22px; font-weight:900; color:var(--green); margin-bottom:10px; letter-spacing:-.5px; }
-.form-success p { font-size:15px; color:var(--sec); line-height:1.65; }
+.form-submit:hover { background: var(--terra-d); transform: translateY(-1px); }
+.form-legal { font-size: 12px; color: var(--muted); text-align: center; margin-top: 12px; line-height: 1.65; }
+.form-success { display: none; text-align: center; padding: 48px 20px; }
+.form-success-icon { font-size: 48px; display: block; margin-bottom: 16px; }
+.form-success h3 { font-family: 'DM Serif Display', serif; font-size: 24px; color: var(--terra); margin-bottom: 10px; }
+.form-success p { font-size: 15px; color: var(--mid); line-height: 1.65; }
 
 /* ── FOOTER ── */
 footer {
-  padding:28px 6vw; border-top:1px solid var(--glass-b);
-  display:flex; justify-content:space-between; align-items:center;
-  flex-wrap:wrap; gap:12px; font-size:13px; color:var(--muted);
-  position:relative; z-index:1;
+  padding: 24px 6vw; border-top: 1px solid var(--cream-dd);
+  display: flex; justify-content: space-between; align-items: center;
+  flex-wrap: wrap; gap: 12px; font-size: 13px; color: var(--muted);
+  background: var(--cream);
 }
-footer a { color:var(--muted); text-decoration:none; transition:color .15s; }
-footer a:hover { color:var(--text); }
+footer a { color: var(--muted); text-decoration: none; transition: color .15s; }
+footer a:hover { color: var(--brown); }
 
-/* ── SIMULATEUR ── */
-.sim-box { max-width:720px; margin:52px auto 0; padding:48px; text-align:center; }
-.sim-sliders { display:grid; grid-template-columns:1fr 1fr; gap:40px; margin-bottom:48px; }
-.sim-slider-wrap { text-align:left; }
-.sim-slider-top { display:flex; justify-content:space-between; align-items:baseline; margin-bottom:12px; }
-.sim-slider-name { font-size:13px; font-weight:700; color:var(--sec); }
-.sim-slider-val { font-size:22px; font-weight:900; color:var(--green); letter-spacing:-1px; }
-input[type=range].sim-range {
-  -webkit-appearance:none; width:100%; height:3px;
-  background: linear-gradient(90deg, var(--green) var(--pct, 28%), var(--glass-b) var(--pct, 28%));
-  border-radius:2px; outline:none; cursor:pointer;
-}
-input[type=range].sim-range::-webkit-slider-thumb {
-  -webkit-appearance:none; width:24px; height:24px; border-radius:50%;
-  background:var(--green); cursor:pointer;
-  box-shadow:0 0 0 4px rgba(0,230,118,.15), 0 0 20px rgba(0,230,118,.4);
-  transition:box-shadow .15s;
-}
-input[type=range].sim-range::-webkit-slider-thumb:hover {
-  box-shadow:0 0 0 6px rgba(0,230,118,.2), 0 0 30px rgba(0,230,118,.5);
-}
-.sim-divider { width:60px; height:2px; background:var(--glass-b); margin:0 auto 36px; }
-.sim-result-label { font-size:11px; font-weight:800; color:var(--muted); text-transform:uppercase; letter-spacing:.15em; margin-bottom:16px; }
-.sim-result-num {
-  font-size:clamp(56px,9vw,96px); font-weight:900;
-  color:var(--orange); letter-spacing:-4px; line-height:1;
-  transition:color .3s;
-}
-.sim-result-num.animate { animation: numPop .25s ease; }
-@keyframes numPop { 0%{transform:scale(1)} 50%{transform:scale(1.06)} 100%{transform:scale(1)} }
-.sim-result-sub { font-size:13px; color:var(--muted); margin-top:14px; line-height:1.6; }
-.sim-weekly { font-size:16px; color:var(--sec); font-weight:700; margin-top:8px; }
-.sim-weekly span { color:var(--orange); }
-.sim-cta-wrap { margin-top:36px; }
-
-/* ── ANIMATIONS ── */
-.fade-up { opacity:0; transform:translateY(28px); transition:opacity .65s ease, transform .65s ease; }
-.fade-up.visible { opacity:1; transform:translateY(0); }
+/* ── FADE-UP ── */
+.fade-up { opacity: 0; transform: translateY(24px); transition: opacity .6s ease, transform .6s ease; }
+.fade-up.visible { opacity: 1; transform: translateY(0); }
 
 /* ── RESPONSIVE ── */
-@media(max-width:768px) {
-  .nav-links { display:none; }
-  .scenarios, .steps, .pricing-layout, .testi-grid, .sim-sliders { grid-template-columns:1fr; }
-  .form-grid { grid-template-columns:1fr; }
-  .hero h1 { letter-spacing:-2.5px; }
-  .hero-proof { flex-direction:column; border-radius:16px; }
-  .proof-item { border-right:none; border-bottom:1px solid var(--glass-b); }
-  .proof-item:last-child { border-bottom:none; }
-  .promo-banner { flex-direction:column; text-align:center; }
-  .price-big { font-size:76px; }
+@media(max-width: 768px) {
+  .nav-links { display: none; }
+  .steps, .offre-grid, .sim-sliders, .demo-grid { grid-template-columns: 1fr; }
+  .form-grid { grid-template-columns: 1fr; }
+  .hero h1 { letter-spacing: -1.5px; }
+  .price-big { font-size: 64px; }
 }
 </style>
 </head>
 <body>
 
-<div class="orb orb-1"></div>
-<div class="orb orb-2"></div>
-<div class="orb orb-3"></div>
-
 <!-- NAV -->
 <nav>
-  <div class="logo">ORDR.</div>
+  <div class="logo">ORDR<span>.</span></div>
   <div class="nav-links">
-    <a href="#probleme">Le problème</a>
-    <a href="#comment">Comment ça marche</a>
+    <a href="#demo">Démo</a>
     <a href="#tarifs">Tarifs</a>
     <a href="#contact" class="nav-cta">C'est gratuit →</a>
   </div>
@@ -394,94 +373,126 @@ input[type=range].sim-range::-webkit-slider-thumb:hover {
 
 <!-- HERO -->
 <section class="hero">
-  <div class="hero-eyebrow">Click &amp; Collect · Pour les vrais commerçants</div>
-
+  <div class="hero-tag">Click &amp; Collect · Ouverture en 10 min</div>
   <h1>
     Vos clients veulent commander.<br>
-    <span class="accent">Laissez-les faire.</span>
+    <em>Laissez-les faire.</em>
   </h1>
-
-  <p class="hero-resolve">Votre click & collect en ligne en <em>10 minutes.</em></p>
-  <p class="hero-sub">Un lien. Vos clients commandent depuis leur téléphone. Vous recevez la commande. Vous encaissez.</p>
-
+  <p class="hero-sub">
+    Une page de commande à votre image, active 24h/24.
+    Pas d'abonnement. On prend 10% uniquement quand vous encaissez.
+  </p>
   <div class="cta-group">
-    <a href="#contact" class="btn-main">C'est gratuit, je démarre →</a>
-    <a href="#comment" class="btn-ghost">Voir comment ça marche</a>
+    <a href="/shop/demo" target="_blank" class="btn-main">Voir la démo →</a>
+    <a href="#contact" class="btn-ghost">Je veux le mien</a>
   </div>
-
   <div class="hero-proof">
     <div class="proof-item">
       <div class="proof-num">10 min</div>
-      <div class="proof-label">pour être en ligne</div>
+      <div class="proof-label">Pour démarrer</div>
     </div>
     <div class="proof-item">
       <div class="proof-num">0 €</div>
-      <div class="proof-label">pour commencer</div>
+      <div class="proof-label">À l'avance</div>
     </div>
     <div class="proof-item">
-      <div class="proof-num">24h/24</div>
-      <div class="proof-label">vos clients commandent</div>
-    </div>
-    <div class="proof-item">
-      <div class="proof-num">0</div>
-      <div class="proof-label">compétence technique</div>
+      <div class="proof-num">10%</div>
+      <div class="proof-label">Par commande</div>
     </div>
   </div>
 </section>
 
-<!-- LE PROBLÈME -->
-<section id="probleme" style="border-top:1px solid var(--glass-b);">
-  <div class="container fade-up">
-    <div class="s-label">Ce qui se passe en ce moment</div>
-    <h2 class="s-h">Des ventes qui disparaissent.<br>En silence.</h2>
-    <p class="s-p">Vous ne les voyez pas. Vous ne les comptez pas. Mais elles existent. Chaque jour, sans commande en ligne, c'est de l'argent que vous offrez à votre concurrent.</p>
+<!-- DÉMO -->
+<section id="demo" style="border-top:1px solid var(--cream-dd); background:var(--cream-d);">
+  <div class="container fade-up" style="text-align:center;">
+    <div class="s-label">Le produit</div>
+    <h2 class="s-h">Ce que vos clients voient.</h2>
+    <div class="demo-grid">
+      <div class="demo-phone">
+        <div class="demo-phone-bar">
+          <div class="demo-dot"></div><div class="demo-dot"></div><div class="demo-dot"></div>
+        </div>
+        <div class="demo-shop-name">🥐 Maison Laurent</div>
+        <div class="demo-shop-sub">Traiteur &amp; Boulangerie · Paris 11e</div>
+        <div class="demo-cat-label">Viennoiseries</div>
+        <div class="demo-items">
+          <div class="demo-item"><span>Croissant beurre</span><span class="demo-price">1,30€ <span class="demo-btn">+</span></span></div>
+          <div class="demo-item"><span>Pain au chocolat</span><span class="demo-price">1,60€ <span class="demo-btn">+</span></span></div>
+        </div>
+        <div class="demo-cat-label">Sandwichs</div>
+        <div class="demo-items">
+          <div class="demo-item"><span>Jambon-beurre tradition</span><span class="demo-price">4,50€ <span class="demo-btn">+</span></span></div>
+          <div class="demo-item"><span>Club poulet avocat</span><span class="demo-price">6,80€ <span class="demo-btn">+</span></span></div>
+        </div>
+        <div class="demo-cart-preview">
+          <div class="demo-cart-line"><span>1× Jambon-beurre</span><span>4,50€</span></div>
+          <div class="demo-cart-line"><span>1× Croissant</span><span>1,30€</span></div>
+          <div class="demo-cart-total"><span>Total</span><span>5,80€</span></div>
+        </div>
+      </div>
+      <div class="demo-right">
+        <div class="demo-notif">
+          <div class="demo-notif-eyebrow">Ce que vous recevez, vous</div>
+          <div class="demo-notif-card">
+            <div class="demo-notif-icon">🔔</div>
+            <div>
+              <div class="demo-notif-title">Maison Laurent · Nouvelle commande</div>
+              <div class="demo-notif-body">Sophie D. · Retrait 12h30 · <strong>5,80€</strong></div>
+            </div>
+          </div>
+          <div class="demo-notif-note">Instantanée. Même si vous êtes en cuisine.</div>
+        </div>
+        <a href="/shop/demo" target="_blank" class="btn-main" style="justify-content:center;">
+          Commander comme un client →
+        </a>
+        <p style="font-size:13px;color:var(--muted);text-align:center;">Pas de compte requis. Pas de CB. Le vrai produit.</p>
+      </div>
+    </div>
+  </div>
+</section>
 
-    <div class="scenarios">
-      <div class="scenario glass">
-        <div class="scenario-time">23h14 — hier soir</div>
-        <h3>Le client du dimanche midi</h3>
-        <p>Il ouvre Instagram, il voit votre photo, il salive. Il cherche un lien pour commander à l'avance. <strong>Il n'en trouve pas.</strong> Il commande chez quelqu'un d'autre.</p>
-        <div class="scenario-loss">Vente perdue — 34€ de panier moyen</div>
+<!-- COMMENT ÇA MARCHE -->
+<section style="border-top:1px solid var(--cream-dd);">
+  <div class="container fade-up">
+    <div class="s-label">Comment ça marche</div>
+    <h2 class="s-h">Trois étapes. Une seule fois.</h2>
+    <div class="steps">
+      <div class="step">
+        <div class="step-n">Étape 01</div>
+        <h3>On vous appelle</h3>
+        <p>Après le formulaire, on vous contacte dans la journée. On règle tout ensemble par téléphone.</p>
+        <p class="step-note">~10 minutes, pas plus.</p>
       </div>
-      <div class="scenario glass">
-        <div class="scenario-time">12h30 — ce midi</div>
-        <h3>Le groupe de bureau</h3>
-        <p>Huit collègues veulent éviter la queue. Ils cherchent une commande à emporter. <strong>Votre commerce n'existe pas en ligne.</strong> Ils choisissent le suivant dans la liste.</p>
-        <div class="scenario-loss">Vente perdue — 160€ d'un coup</div>
+      <div class="step">
+        <div class="step-n">Étape 02</div>
+        <h3>Votre menu en ligne</h3>
+        <p>On extrait votre carte depuis une photo ou votre Google. Vous corrigez ce qui ne va pas.</p>
+        <p class="step-note">Aucune compétence technique requise.</p>
       </div>
-      <div class="scenario glass">
-        <div class="scenario-time">Samedi — chaque semaine</div>
-        <h3>La famille pressée</h3>
-        <p>Ils passent dans votre rue. Ils auraient aimé réserver en avance pour ne pas attendre. <strong>Pas de système, pas de commande.</strong> Ils rentrent chez eux sans s'arrêter.</p>
-        <div class="scenario-loss">Vente perdue — encore</div>
-      </div>
-      <div class="scenario glass">
-        <div class="scenario-time">Tous les jours</div>
-        <h3>Le téléphone qui sonne trop</h3>
-        <p>Les erreurs, les répétitions, le client qui rappelle parce qu'il a oublié de préciser. <strong>La commande par téléphone, ça coûte du temps.</strong> Et le temps, c'est de l'argent.</p>
-        <div class="scenario-loss">Énergie perdue — chaque jour</div>
+      <div class="step">
+        <div class="step-n">Étape 03</div>
+        <h3>Vos clients commandent</h3>
+        <p>Vous recevez un lien. Vous le partagez où vous voulez. Les commandes arrivent directement sur votre téléphone.</p>
       </div>
     </div>
   </div>
 </section>
 
 <!-- SIMULATEUR -->
-<section style="border-top:1px solid var(--glass-b);">
+<section style="border-top:1px solid var(--cream-dd); background:var(--cream-d);">
   <div class="container fade-up" style="text-align:center;">
-    <div class="s-label">Votre manque à gagner</div>
-    <h2 class="s-h">Combien vous perdez<br>chaque année ?</h2>
-    <p class="s-p" style="margin:0 auto;">Deux curseurs. Le calcul se fait tout seul.</p>
-
-    <div class="sim-box glass-strong">
+    <div class="s-label">Calculez</div>
+    <h2 class="s-h">Combien ça vous coûte<br>chaque semaine ?</h2>
+    <div class="sim-box">
       <div class="sim-sliders">
         <div class="sim-slider-wrap">
           <div class="sim-slider-top">
-            <div class="sim-slider-name">Clients par semaine</div>
-            <div class="sim-slider-val" id="val-clients">150</div>
+            <div class="sim-slider-name">Commandes ratées par semaine</div>
+            <div class="sim-slider-val" id="val-clients">8</div>
           </div>
           <input type="range" class="sim-range" id="sl-clients"
-                 min="20" max="600" step="10" value="150"
-                 oninput="updateSim(this,'val-clients','',20,600)">
+                 min="1" max="50" step="1" value="8"
+                 oninput="updateSim(this,'val-clients','',1,50)">
         </div>
         <div class="sim-slider-wrap">
           <div class="sim-slider-top">
@@ -493,14 +504,10 @@ input[type=range].sim-range::-webkit-slider-thumb:hover {
                  oninput="updateSim(this,'val-basket','€',5,80)">
         </div>
       </div>
-
       <div class="sim-divider"></div>
-
-      <div class="sim-result-label">Ventes que vous ratez chaque année</div>
-      <div class="sim-result-num" id="sim-annual">20 592€</div>
-      <div class="sim-weekly">soit <span id="sim-weekly">396€</span> par semaine</div>
-      <div class="sim-result-sub">Estimation à 12% de taux de conversion click & collect — moyenne constatée dans le secteur</div>
-
+      <div class="sim-result-label">Ventes manquées chaque année</div>
+      <div class="sim-result-num" id="sim-annual">9 152€</div>
+      <div class="sim-weekly">soit <span id="sim-weekly">176€</span> par semaine</div>
       <div class="sim-cta-wrap">
         <a href="#contact" class="btn-main">Récupérer ces ventes →</a>
       </div>
@@ -508,124 +515,70 @@ input[type=range].sim-range::-webkit-slider-thumb:hover {
   </div>
 </section>
 
-<!-- COMMENT ÇA MARCHE -->
-<section id="comment" style="border-top:1px solid var(--glass-b);">
-  <div class="container fade-up">
-    <div class="s-label">La solution</div>
-    <h2 class="s-h">10 minutes.<br>Pas 10 semaines.</h2>
-    <p class="s-p">Pas de développeur. Pas de réunion. Pas de contrat à signer. Une photo, un lien, c'est en ligne.</p>
-
-    <div class="steps">
-      <div class="step glass">
-        <div class="step-n">Étape 01</div>
-        <span class="step-icon">📸</span>
-        <h3>Une photo de votre carte</h3>
-        <p>Même manuscrite. Même froissée. Notre IA lit tout : produits, prix, catégories. Votre catalogue est prêt en 30 secondes.</p>
-        <div class="step-note">Fonctionne aussi avec une recherche Google de votre commerce.</div>
-      </div>
-      <div class="step glass">
-        <div class="step-n">Étape 02</div>
-        <span class="step-icon">🔗</span>
-        <h3>Votre lien est là</h3>
-        <p>Un lien unique pour votre commerce. Bio Instagram, message WhatsApp, QR code sur votre caisse. En 30 secondes, vos clients peuvent commander depuis leur téléphone.</p>
-      </div>
-      <div class="step glass">
-        <div class="step-n">Étape 03</div>
-        <span class="step-icon">📳</span>
-        <h3>Votre téléphone bipe</h3>
-        <p>Commande reçue. Notification immédiate. Le client arrive à l'heure qu'il a choisie. Vous encaissez. La vie est belle.</p>
-        <div class="step-note">Paiement en ligne sécurisé via Stripe — ou sur place, vous choisissez.</div>
-      </div>
-    </div>
-  </div>
-</section>
-
-
-<!-- TÉMOIGNAGES -->
-<section style="border-top:1px solid var(--glass-b);">
-  <div class="container fade-up">
-    <div class="s-label">Ils ont sauté le pas</div>
-    <h2 class="s-h">Ils avaient les mêmes doutes.<br>Ils ne les ont plus.</h2>
-
-    <div class="testi-grid">
-      <div class="testi glass">
-        <div class="testi-stars">★★★★★</div>
-        <p class="testi-text">« En 10 minutes c'était en ligne. J'ai partagé le lien sur Instagram le soir même. <strong>Première commande le lendemain matin.</strong> Je m'en veux de ne pas l'avoir fait avant. »</p>
-        <div class="testi-author">Thomas R.</div>
-        <div class="testi-role">Restaurant · Lyon 3e</div>
-      </div>
-      <div class="testi glass">
-        <div class="testi-stars">★★★★★</div>
-        <p class="testi-text">« Je n'avais aucune présence en ligne. Maintenant mes clients réservent leur pain du dimanche depuis le samedi soir. <strong>Mon chiffre du dimanche a augmenté de 30%.</strong> »</p>
-        <div class="testi-author">Amira B.</div>
-        <div class="testi-role">Boulangerie · Bordeaux</div>
-      </div>
-      <div class="testi glass">
-        <div class="testi-stars">★★★★★</div>
-        <p class="testi-text">« J'étais sur une grande plateforme. <strong>Je leur donnais 30% de chaque vente.</strong> Maintenant j'en garde 90. La question elle s'est pas posée longtemps. »</p>
-        <div class="testi-author">Kévin M.</div>
-        <div class="testi-role">Bar à tapas · Nantes</div>
-      </div>
-    </div>
-  </div>
-</section>
-
 <!-- TARIFS -->
-<section id="tarifs" style="border-top:1px solid var(--glass-b);">
+<section id="tarifs" style="border-top:1px solid var(--cream-dd);">
   <div class="container fade-up">
-    <div class="s-label">Ce qu'on fait pour vous</div>
-    <p class="price-intro">
-      Votre menu en ligne.<br>
-      Vos clients commandent depuis leur téléphone.<br>
-      <em>Vous recevez la commande.</em>
-    </p>
-
-    <div class="pricing-layout">
-      <div class="price-card glass-strong">
-        <div class="price-eyebrow">Click & collect — sans rien avoir à faire</div>
-        <div class="price-num-row">
-          <div class="price-big">10</div>
-          <div class="price-pct">%</div>
+    <div class="s-label">Tarif</div>
+    <h2 class="s-h" style="text-align:center;max-width:680px;margin:0 auto 52px;">
+      10% par commande.<br><span style="color:var(--muted);font-style:italic;">Zéro à l'avance.</span>
+    </h2>
+    <div class="offre-grid">
+      <div class="price-card">
+        <div class="price-card-head">
+          <div style="display:flex;align-items:flex-end;gap:2px;margin-bottom:8px;">
+            <span class="price-big">10</span><span class="price-pct">%</span>
+          </div>
+          <p class="price-tagline">Uniquement sur ce que vous encaissez. Si vous ne vendez pas, vous ne payez rien.</p>
         </div>
-        <p class="price-tagline">Par commande encaissée. Zéro abonnement. Zéro frais fixe. On installe tout, on gère tout, vous n'avez qu'à recevoir les commandes.</p>
         <ul class="price-list">
-          <li><span class="chk">✓</span> Mise en place offerte — on s'en occupe avec vous</li>
-          <li><span class="chk">✓</span> Extraction menu par IA incluse</li>
+          <li><span class="chk">✓</span> Installation offerte — on s'en occupe avec vous</li>
+          <li><span class="chk">✓</span> Menu extrait depuis une photo ou Google</li>
           <li><span class="chk">✓</span> Notifications commandes en temps réel</li>
-          <li><span class="chk">✓</span> Paiement en ligne sécurisé via Stripe</li>
-          <li><span class="chk">✓</span> Créneaux et horaires sur-mesure</li>
-          <li><span class="chk">✓</span> Espace commerçant dédié</li>
-          <li><span class="chk">✓</span> Support réactif — on répond</li>
+          <li><span class="chk">✓</span> Paiement en ligne ou sur place — vous choisissez</li>
+          <li><span class="chk">✓</span> Votre page active 24h/24, même quand vous êtes fermé</li>
+          <li><span class="chk">✓</span> Aucun engagement, vous arrêtez quand vous voulez</li>
         </ul>
-        <a href="#contact" class="btn-main" style="display:flex;width:100%;justify-content:center;margin-top:32px;">Démarrer →</a>
+        <a href="#contact" class="btn-main" style="display:flex;justify-content:center;margin-top:28px;">Démarrer gratuitement →</a>
       </div>
-
-      <div class="calc-box glass">
-        <div class="calc-title">Des ventes que vous ratiez. Chaque semaine.</div>
-        <div class="calc-row"><span>Client à 23h qui veut réserver</span><b class="c-orange">Impossible</b></div>
-        <div class="calc-row"><span>Groupe qui commande à l'avance</span><b class="c-orange">Impossible</b></div>
-        <div class="calc-row"><span>Client qui ne veut pas appeler</span><b class="c-orange">Impossible</b></div>
-        <hr class="calc-sep">
-        <div class="calc-row"><span>Client à 23h qui veut réserver</span><b class="c-green">Commande reçue</b></div>
-        <div class="calc-row"><span>Groupe qui commande à l'avance</span><b class="c-green">Commande reçue</b></div>
-        <div class="calc-row"><span>Client qui ne veut pas appeler</span><b class="c-green">Commande reçue</b></div>
-        <div class="calc-verdict">
-          <strong>Votre commerce prend des commandes 24h/24.</strong>
-          Même quand vous êtes fermé.<br>Même quand vous ne décrochez pas.
-        </div>
+      <div class="faq-list">
+        <details class="faq-item">
+          <summary class="faq-q">Ça marche pour quel type de commerce ?</summary>
+          <p class="faq-a">Restaurants, boulangeries, traiteurs, bouchers, épiceries fines. Pas pour les bars sans carte à emporter ni les prestataires de service.</p>
+        </details>
+        <details class="faq-item">
+          <summary class="faq-q">Je peux arrêter quand je veux ?</summary>
+          <p class="faq-a">Oui. Aucun contrat, aucun engagement. Vous désactivez votre page quand vous voulez, sans frais.</p>
+        </details>
+        <details class="faq-item">
+          <summary class="faq-q">Que se passe-t-il après le formulaire ?</summary>
+          <p class="faq-a">On vous appelle sous 24h. On installe votre page ensemble en 10 minutes. Vous repartez avec votre lien de commande.</p>
+        </details>
+        <details class="faq-item">
+          <summary class="faq-q">Comment je reçois l'argent ?</summary>
+          <p class="faq-a">Directement sur votre compte bancaire via Stripe. Les virements arrivent en 2 jours ouvrés. Vous gardez 90%, on prend 10%.</p>
+        </details>
       </div>
     </div>
   </div>
 </section>
+
+<!-- BANNER -->
+<div class="promo-wrap">
+  <div class="promo-banner">
+    <div>
+      <div class="promo-text">Prêt en 10 minutes. Vos clients commandent ce soir.</div>
+      <div class="promo-fine">Installation gratuite. Aucune carte bancaire requise.</div>
+    </div>
+    <a href="#contact" class="btn-main-inv">Je démarre →</a>
+  </div>
+</div>
 
 <!-- CTA FINAL -->
 <section class="cta-section" id="contact">
   <div class="container fade-up">
-    <div class="s-label">Ce soir</div>
     <h2 class="cta-h">Ce soir, vos clients<br>commandent <em>chez vous.</em></h2>
-    <p class="cta-p">Laissez-nous vos coordonnées. On vous rappelle dans la journée et on met tout en place ensemble. Gratuitement.</p>
-
-    <div class="form-wrap glass-strong">
+    <p class="cta-p">Laissez vos coordonnées. On vous appelle dans la journée pour tout mettre en place.</p>
+    <div class="form-wrap">
       <div id="form-content">
         <div class="form-grid">
           <div class="form-row">
@@ -665,7 +618,7 @@ input[type=range].sim-range::-webkit-slider-thumb:hover {
         <p class="form-legal">Aucun engagement. Aucune carte bancaire. On vous rappelle pour tout mettre en place ensemble.</p>
       </div>
       <div class="form-success" id="form-success">
-        <span class="form-success-icon">✅</span>
+        <span class="form-success-icon">✓</span>
         <h3>Reçu.</h3>
         <p>On vous rappelle dans la journée.</p>
       </div>
@@ -676,7 +629,7 @@ input[type=range].sim-range::-webkit-slider-thumb:hover {
 <!-- FOOTER -->
 <footer>
   <div>
-    <strong style="font-size:16px;font-weight:900;background:linear-gradient(135deg,var(--green),#80FFB8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">ORDR.</strong>
+    <strong style="font-family:'DM Serif Display',serif;font-size:17px;color:var(--brown);">ORDR.</strong>
     &nbsp;·&nbsp; Click &amp; Collect pour les vrais commerçants
   </div>
   <div style="display:flex;gap:20px;">
@@ -690,35 +643,25 @@ const obs = new IntersectionObserver(entries => {
 }, { threshold: 0.1 });
 document.querySelectorAll('.fade-up').forEach(el => obs.observe(el));
 
-// ── Simulateur ──
-function formatNum(n) {
-  return Math.round(n).toLocaleString('fr-FR') + '€';
-}
-
+function formatNum(n) { return Math.round(n).toLocaleString('fr-FR') + '€'; }
 function updateSim(el, labelId, suffix, min, max) {
   const v = parseInt(el.value);
   document.getElementById(labelId).textContent = v + suffix;
-  const pct = ((v - min) / (max - min) * 100).toFixed(1) + '%';
-  el.style.setProperty('--pct', pct);
+  el.style.setProperty('--pct', ((v - min) / (max - min) * 100).toFixed(1) + '%');
   calcSim();
 }
-
 function calcSim() {
-  const clients = parseInt(document.getElementById('sl-clients').value);
-  const basket  = parseInt(document.getElementById('sl-basket').value);
-  const weekly  = clients * 0.12 * basket;
-  const annual  = weekly * 52;
-
+  const missed = parseInt(document.getElementById('sl-clients').value);
+  const basket = parseInt(document.getElementById('sl-basket').value);
+  const weekly = missed * basket;
+  const annual = weekly * 52;
   const annualEl = document.getElementById('sim-annual');
   annualEl.textContent = formatNum(annual);
   annualEl.classList.remove('animate');
   void annualEl.offsetWidth;
   annualEl.classList.add('animate');
-
   document.getElementById('sim-weekly').textContent = formatNum(weekly);
 }
-
-// Init slider gradient
 document.querySelectorAll('.sim-range').forEach(el => {
   const min = parseInt(el.min), max = parseInt(el.max), v = parseInt(el.value);
   el.style.setProperty('--pct', ((v - min) / (max - min) * 100).toFixed(1) + '%');
@@ -730,16 +673,13 @@ async function submitForm() {
   const email    = document.getElementById('f-email').value.trim();
   const commerce = document.getElementById('f-commerce').value.trim();
   const type     = document.getElementById('f-type').value;
-
   if (!name || !phone || !commerce || !type) {
     alert('Merci de remplir tous les champs.');
     return;
   }
-
   const btn = document.querySelector('.form-submit');
   btn.textContent = 'Envoi en cours…';
   btn.disabled = true;
-
   try {
     const res = await fetch('/api/contact', {
       method: 'POST',

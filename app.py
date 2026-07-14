@@ -29,6 +29,47 @@ PLATFORM_FEE_FIXED   = 0.30
 
 db.init_db()
 
+_DEMO_SHOP = {
+    "id": "demo",
+    "nom_commerce": "Maison Laurent",
+    "adresse": "12 rue des Artisans, Paris 11e",
+    "categories": [
+        {"nom_categorie": "Viennoiseries", "produits": [
+            {"nom": "Croissant beurre",   "prix": 1.30, "description": "Feuilleté, doré, beurre AOP Charentes"},
+            {"nom": "Pain au chocolat",   "prix": 1.60, "description": "Deux barres de chocolat noir Valrhona"},
+            {"nom": "Chausson aux pommes","prix": 1.80, "description": "Pommes caramélisées maison, pâte feuilletée"},
+        ]},
+        {"nom_categorie": "Sandwichs", "produits": [
+            {"nom": "Jambon-beurre tradition","prix": 4.50, "description": "Jambon Paris, beurre demi-sel, baguette tradition"},
+            {"nom": "Club poulet avocat",     "prix": 6.80, "description": "Poulet rôti, avocat, tomate, mayo citron"},
+            {"nom": "Veggie du marché",       "prix": 5.50, "description": "Houmous, légumes grillés, roquette, pain de seigle"},
+        ]},
+        {"nom_categorie": "Plats", "produits": [
+            {"nom": "Quiche lorraine",   "prix": 7.50, "description": "Lardons fumés, crème fraîche, pâte maison"},
+            {"nom": "Salade niçoise",    "prix": 8.50, "description": "Thon, olives, œuf mollet, haricots verts"},
+            {"nom": "Gratin dauphinois", "prix": 6.80, "description": "Pommes de terre, crème, gruyère gratinée"},
+        ]},
+        {"nom_categorie": "Desserts", "produits": [
+            {"nom": "Tarte citron meringuée","prix": 3.80, "description": "Citrons de Menton, meringue italienne"},
+            {"nom": "Éclair chocolat",       "prix": 3.20, "description": "Crème pâtissière, glaçage pur cacao"},
+            {"nom": "Millefeuille vanille",  "prix": 4.20, "description": "Feuilletage caramélisé, crème vanille Bourbon"},
+        ]},
+    ],
+    "total_produits": 12,
+    "stripe_onboarding_complete": False,
+    "horaires": {
+        "lun": {"ouvert": True,  "open": "07:00", "close": "19:00"},
+        "mar": {"ouvert": True,  "open": "07:00", "close": "19:00"},
+        "mer": {"ouvert": True,  "open": "07:00", "close": "19:00"},
+        "jeu": {"ouvert": True,  "open": "07:00", "close": "19:00"},
+        "ven": {"ouvert": True,  "open": "07:00", "close": "19:00"},
+        "sam": {"ouvert": True,  "open": "07:00", "close": "14:00"},
+        "dim": {"ouvert": False, "open": "08:00", "close": "13:00"},
+    },
+}
+if not db.get_shop("demo"):
+    db.create_shop(_DEMO_SHOP)
+
 
 # ── Helpers ────────────────────────────────────────────────────────────────────
 
