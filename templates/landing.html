@@ -197,40 +197,17 @@ section { padding: 100px 6vw; }
 .step p { font-size: 14px; color: var(--mid); line-height: 1.65; }
 .step-note { font-size: 12px; color: var(--muted); margin-top: 10px; font-style: italic; }
 
-/* ── SIMULATEUR ── */
-.sim-box {
-  max-width: 680px; margin: 52px auto 0;
-  background: #fff; border: 1px solid var(--cream-dd);
-  border-radius: 16px; padding: 48px; text-align: center;
+/* ── SITUATIONS ── */
+.situations { display: grid; grid-template-columns: 1fr 1fr; gap: 2px; margin-top: 52px; background: var(--cream-dd); border: 1px solid var(--cream-dd); border-radius: 14px; overflow: hidden; }
+.situation { padding: 36px; background: #fff; }
+.situation-time { font-size: 12px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: .1em; margin-bottom: 16px; }
+.situation h3 { font-family: 'DM Serif Display', serif; font-size: 20px; line-height: 1.3; color: var(--brown); margin-bottom: 14px; }
+.situation-verdict {
+  font-size: 13px; font-weight: 700; color: var(--terra);
+  padding: 10px 14px; background: rgba(200,75,47,.06);
+  border-left: 3px solid var(--terra); border-radius: 0 6px 6px 0;
+  line-height: 1.5;
 }
-.sim-sliders { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; margin-bottom: 48px; }
-.sim-slider-wrap { text-align: left; }
-.sim-slider-top { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 12px; }
-.sim-slider-name { font-size: 13px; font-weight: 600; color: var(--mid); }
-.sim-slider-val { font-family: 'DM Serif Display', serif; font-size: 24px; color: var(--terra); }
-input[type=range].sim-range {
-  -webkit-appearance: none; width: 100%; height: 3px;
-  background: linear-gradient(90deg, var(--terra) var(--pct, 28%), var(--cream-dd) var(--pct, 28%));
-  border-radius: 2px; outline: none; cursor: pointer;
-}
-input[type=range].sim-range::-webkit-slider-thumb {
-  -webkit-appearance: none; width: 22px; height: 22px; border-radius: 50%;
-  background: var(--terra); cursor: pointer; border: 3px solid #fff;
-  box-shadow: 0 1px 4px rgba(0,0,0,.2);
-}
-.sim-divider { width: 48px; height: 1px; background: var(--cream-dd); margin: 0 auto 36px; }
-.sim-result-label { font-size: 11px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: .14em; margin-bottom: 14px; }
-.sim-result-num {
-  font-family: 'DM Serif Display', serif;
-  font-size: clamp(52px, 9vw, 88px);
-  color: var(--terra); letter-spacing: -2px; line-height: 1;
-}
-.sim-result-num.animate { animation: numPop .25s ease; }
-@keyframes numPop { 0%{transform:scale(1)} 50%{transform:scale(1.04)} 100%{transform:scale(1)} }
-.sim-result-sub { font-size: 13px; color: var(--muted); margin-top: 12px; line-height: 1.6; }
-.sim-weekly { font-size: 16px; color: var(--mid); font-weight: 600; margin-top: 6px; }
-.sim-weekly span { color: var(--terra); }
-.sim-cta-wrap { margin-top: 36px; }
 
 /* ── TARIFS ── */
 .offre-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; align-items: start; }
@@ -352,7 +329,7 @@ footer a:hover { color: var(--brown); }
 /* ── RESPONSIVE ── */
 @media(max-width: 768px) {
   .nav-links { display: none; }
-  .steps, .offre-grid, .sim-sliders, .demo-grid { grid-template-columns: 1fr; }
+  .steps, .offre-grid, .demo-grid, .situations { grid-template-columns: 1fr; }
   .form-grid { grid-template-columns: 1fr; }
   .hero h1 { letter-spacing: -1.5px; }
   .price-big { font-size: 64px; }
@@ -478,39 +455,35 @@ footer a:hover { color: var(--brown); }
   </div>
 </section>
 
-<!-- SIMULATEUR -->
+<!-- SITUATIONS -->
 <section style="border-top:1px solid var(--cream-dd); background:var(--cream-d);">
-  <div class="container fade-up" style="text-align:center;">
-    <div class="s-label">Calculez</div>
-    <h2 class="s-h">Combien ça vous coûte<br>chaque semaine ?</h2>
-    <div class="sim-box">
-      <div class="sim-sliders">
-        <div class="sim-slider-wrap">
-          <div class="sim-slider-top">
-            <div class="sim-slider-name">Commandes ratées par semaine</div>
-            <div class="sim-slider-val" id="val-clients">8</div>
-          </div>
-          <input type="range" class="sim-range" id="sl-clients"
-                 min="1" max="50" step="1" value="8"
-                 oninput="updateSim(this,'val-clients','',1,50)">
-        </div>
-        <div class="sim-slider-wrap">
-          <div class="sim-slider-top">
-            <div class="sim-slider-name">Panier moyen</div>
-            <div class="sim-slider-val" id="val-basket">22€</div>
-          </div>
-          <input type="range" class="sim-range" id="sl-basket"
-                 min="5" max="80" step="1" value="22"
-                 oninput="updateSim(this,'val-basket','€',5,80)">
-        </div>
+  <div class="container fade-up">
+    <div class="s-label">Pourquoi</div>
+    <h2 class="s-h">Des situations que vous connaissez.</h2>
+    <div class="situations">
+      <div class="situation">
+        <div class="situation-time">21h, un soir de semaine</div>
+        <h3>Un client cherche quoi manger demain midi. Il tape votre nom sur Google. Il tombe sur votre concurrent qui a une page de commande.</h3>
+        <div class="situation-verdict">Vous n'étiez pas disponible. Votre concurrent, si.</div>
       </div>
-      <div class="sim-divider"></div>
-      <div class="sim-result-label">Ventes manquées chaque année</div>
-      <div class="sim-result-num" id="sim-annual">9 152€</div>
-      <div class="sim-weekly">soit <span id="sim-weekly">176€</span> par semaine</div>
-      <div class="sim-cta-wrap">
-        <a href="#contact" class="btn-main">Récupérer ces ventes →</a>
+      <div class="situation">
+        <div class="situation-time">Service du midi à fond</div>
+        <h3>Four qui sonne, client au comptoir, téléphone qui vibre. Vous décrochez pas. La personne raccroche et commande ailleurs.</h3>
+        <div class="situation-verdict">Cette commande est partie. Sans bruit, sans alerte.</div>
       </div>
+      <div class="situation">
+        <div class="situation-time">Votre client habituel, sur Instagram</div>
+        <h3>Il voit votre plat du jour. Il veut commander pour le retrait de 13h. Il cherche comment. Il trouve rien. Il commande en 3 clics sur une appli qu'il connaît.</h3>
+        <div class="situation-verdict">Il vous aime bien. Mais la flemme a gagné.</div>
+      </div>
+      <div class="situation">
+        <div class="situation-time">Vous fermez 2 semaines en août</div>
+        <h3>Vos clients cherchent une alternative. Ils en trouvent une. Et certains s'y habituent.</h3>
+        <div class="situation-verdict">Les habitudes se perdent vite.</div>
+      </div>
+    </div>
+    <div style="text-align:center;margin-top:36px;">
+      <a href="#contact" class="btn-main">Être disponible même quand vous ne l'êtes pas →</a>
     </div>
   </div>
 </section>
@@ -643,29 +616,6 @@ const obs = new IntersectionObserver(entries => {
 }, { threshold: 0.1 });
 document.querySelectorAll('.fade-up').forEach(el => obs.observe(el));
 
-function formatNum(n) { return Math.round(n).toLocaleString('fr-FR') + '€'; }
-function updateSim(el, labelId, suffix, min, max) {
-  const v = parseInt(el.value);
-  document.getElementById(labelId).textContent = v + suffix;
-  el.style.setProperty('--pct', ((v - min) / (max - min) * 100).toFixed(1) + '%');
-  calcSim();
-}
-function calcSim() {
-  const missed = parseInt(document.getElementById('sl-clients').value);
-  const basket = parseInt(document.getElementById('sl-basket').value);
-  const weekly = missed * basket;
-  const annual = weekly * 52;
-  const annualEl = document.getElementById('sim-annual');
-  annualEl.textContent = formatNum(annual);
-  annualEl.classList.remove('animate');
-  void annualEl.offsetWidth;
-  annualEl.classList.add('animate');
-  document.getElementById('sim-weekly').textContent = formatNum(weekly);
-}
-document.querySelectorAll('.sim-range').forEach(el => {
-  const min = parseInt(el.min), max = parseInt(el.max), v = parseInt(el.value);
-  el.style.setProperty('--pct', ((v - min) / (max - min) * 100).toFixed(1) + '%');
-});
 
 async function submitForm() {
   const name     = document.getElementById('f-name').value.trim();
